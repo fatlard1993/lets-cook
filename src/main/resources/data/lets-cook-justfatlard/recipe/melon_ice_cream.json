@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "lets-cook-justfatlard:ice_cream",
+    "minecraft:melon_slice"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:melon_ice_cream",
+    "count": 1
+  }
+}

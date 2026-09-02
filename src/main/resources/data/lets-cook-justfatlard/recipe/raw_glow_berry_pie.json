@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bucket",
+    "minecraft:glow_berries",
+    "minecraft:sugar",
+    "minecraft:egg"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:raw_glow_berry_pie",
+    "count": 1
+  }
+}

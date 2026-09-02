@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bowl",
+    "minecraft:sweet_berries",
+    "minecraft:melon_slice",
+    "minecraft:apple"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:fruit_salad",
+    "count": 1
+  }
+}

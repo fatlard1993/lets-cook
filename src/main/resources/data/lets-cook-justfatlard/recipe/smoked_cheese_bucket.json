@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.35,
+  "ingredient": "lets-cook-justfatlard:cheese_bucket",
+  "result": {
+    "id": "lets-cook-justfatlard:smoked_cheese_bucket",
+    "count": 1
+  }
+}

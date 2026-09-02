@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": "lets-cook-justfatlard:nether_chili",
+  "result": {
+    "id": "lets-cook-justfatlard:nether_loaf",
+    "count": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:apple",
+    "minecraft:sugar",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:caramel_apple",
+    "count": 1
+  }
+}

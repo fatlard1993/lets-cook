@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "lets-cook-justfatlard:item/glow_ice_cream"
+  }
+}

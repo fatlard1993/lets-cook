@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:dried_kelp",
+    "#lets-cook-justfatlard:sushi_fish",
+    "minecraft:wheat"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:sushi",
+    "count": 1
+  }
+}

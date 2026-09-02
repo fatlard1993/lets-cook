@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bowl",
+    "minecraft:baked_potato",
+    "minecraft:baked_potato",
+    "minecraft:milk_bucket"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:potato_chowder",
+    "count": 1
+  }
+}

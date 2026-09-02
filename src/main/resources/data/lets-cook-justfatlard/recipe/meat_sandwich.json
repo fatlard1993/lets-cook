@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bread",
+    "#lets-cook-justfatlard:stew_meats",
+    "minecraft:kelp"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:meat_sandwich",
+    "count": 1
+  }
+}

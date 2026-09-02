@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "bites=0,vintage=0": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v0"
+    },
+    "bites=1,vintage=0": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v0_slice1"
+    },
+    "bites=2,vintage=0": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v0_slice2"
+    },
+    "bites=3,vintage=0": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v0_slice3"
+    },
+    "bites=4,vintage=0": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v0_slice4"
+    },
+    "bites=5,vintage=0": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v0_slice5"
+    },
+    "bites=6,vintage=0": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v0_slice6"
+    },
+    "bites=0,vintage=1": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v1"
+    },
+    "bites=1,vintage=1": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v1_slice1"
+    },
+    "bites=2,vintage=1": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v1_slice2"
+    },
+    "bites=3,vintage=1": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v1_slice3"
+    },
+    "bites=4,vintage=1": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v1_slice4"
+    },
+    "bites=5,vintage=1": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v1_slice5"
+    },
+    "bites=6,vintage=1": {
+      "model": "lets-cook-justfatlard:block/smoked_cheese_block_v1_slice6"
+    }
+  }
+}

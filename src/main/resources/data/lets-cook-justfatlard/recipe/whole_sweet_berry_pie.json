@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": "lets-cook-justfatlard:raw_sweet_berry_pie",
+  "result": {
+    "id": "lets-cook-justfatlard:whole_sweet_berry_pie",
+    "count": 1
+  }
+}

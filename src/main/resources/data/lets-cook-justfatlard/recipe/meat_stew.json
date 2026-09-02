@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bowl",
+    "#lets-cook-justfatlard:stew_meats",
+    "minecraft:carrot",
+    "minecraft:potato"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:meat_stew",
+    "count": 1
+  }
+}

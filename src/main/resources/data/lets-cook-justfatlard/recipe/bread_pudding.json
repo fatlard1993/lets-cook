@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bowl",
+    "minecraft:bread",
+    "minecraft:egg",
+    "minecraft:sugar"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:bread_pudding",
+    "count": 1
+  }
+}

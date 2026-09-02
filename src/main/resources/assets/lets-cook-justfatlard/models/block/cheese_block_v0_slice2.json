@@ -1,0 +1,44 @@
+{
+  "textures": {
+    "particle": "lets-cook-justfatlard:block/cheese_v0_side",
+    "bottom": "lets-cook-justfatlard:block/cheese_v0_bottom",
+    "top": "lets-cook-justfatlard:block/cheese_v0_top",
+    "side": "lets-cook-justfatlard:block/cheese_v0_side",
+    "inside": "lets-cook-justfatlard:block/cheese_v0_inner"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        8,
+        15
+      ],
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#inside"
+        },
+        "east": {
+          "texture": "#side"
+        }
+      }
+    }
+  ]
+}

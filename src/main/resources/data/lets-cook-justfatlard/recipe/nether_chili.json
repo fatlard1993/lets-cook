@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bowl",
+    "minecraft:crimson_fungus",
+    "minecraft:warped_fungus",
+    "minecraft:nether_wart"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:nether_chili",
+    "count": 1
+  }
+}

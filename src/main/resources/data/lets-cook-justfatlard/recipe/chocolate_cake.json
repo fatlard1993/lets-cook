@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:cake",
+    "minecraft:cocoa_beans"
+  ],
+  "result": {
+    "id": "lets-cook-justfatlard:chocolate_cake",
+    "count": 1
+  }
+}
