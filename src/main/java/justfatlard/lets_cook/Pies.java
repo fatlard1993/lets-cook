@@ -75,7 +75,7 @@ public final class Pies {
 			settings.lightLevel(state -> light);
 		}
 
-		Block baked = new SliceableBlock(settings, SLICE, SLICE_SATURATION, false);
+		Block baked = new SliceableBlock(settings, SLICE, SLICE_SATURATION);
 		Registry.register(BuiltInRegistries.BLOCK,
 			Identifier.fromNamespaceAndPath(Main.MOD_ID, name), baked);
 		BLOCKS.add(name);
@@ -90,6 +90,12 @@ public final class Pies {
 	private static void item(String name, Item item) {
 		Registry.register(BuiltInRegistries.ITEM,
 			Identifier.fromNamespaceAndPath(Main.MOD_ID, name), item);
+		// What vanilla's own registration does for a block item and Registry.register does
+		// not: without this the block answers asItem() with air, so pick-block gives nothing
+		// and a bite throws no crumbs.
+		if (item instanceof BlockItem blockItem) {
+			blockItem.registerBlocks(Item.BY_BLOCK, item);
+		}
 		ITEMS.put(name, item);
 	}
 }

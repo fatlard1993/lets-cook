@@ -37,16 +37,17 @@ Four vanilla meats are renamed, and every animal that plausibly has meat on it d
 | Vanilla item | Now called |
 |--------------|------------|
 | Porkchop | White Meat |
-| Beef | Lean Red Meat |
-| Mutton | Fatty Red Meat |
+| Beef | Fatty Red Meat |
+| Mutton | Lean Red Meat |
 | Chicken | Poultry |
 
-The names follow the meat through cooking and smoking: Raw Lean Red Meat, Cooked Lean Red Meat,
-Smoked Lean Red Meat. Rabbit, cod and salmon keep their names raw and cooked and become Smoked
+Beef is the fatty one because its picture is: the marbling is right there on the icon, and mutton's
+is the leaner cut. The names follow the meat through cooking and smoking: Raw Fatty Red Meat, Cooked
+Fatty Red Meat, Smoked Fatty Red Meat. Rabbit, cod and salmon keep their names raw and cooked and become Smoked
 Small Game, Smoked Whitefish and Smoked Oily Fish.
 
-**Animals that dropped nothing now drop meat.** Horses, donkeys, mules and camels drop lean red
-meat. Goats, llamas and trader llamas drop fatty red meat. Parrots drop poultry. Polar bears drop
+**Animals that dropped nothing now drop meat.** Horses, donkeys, mules and camels drop fatty red
+meat. Goats, llamas and trader llamas drop lean red meat. Parrots drop poultry. Polar bears drop
 white meat alongside their fish. Each is cooked if the animal died on fire, the way a cow's is, and
 each animal keeps whatever else it dropped before.
 
@@ -161,12 +162,16 @@ Pumpkin, sweet berry and glow berry. The glow berry pie gives off light, because
 
 **Chocolate Cake** is a cake and cocoa beans, and is its own block with its own seven slices.
 
+A slice is never refused: cake, cheese and pie are cut whether or not you are hungry, vanilla's
+cake included. Every slice cut off a block, cake, cheese or pie, makes the eating sound and throws crumbs off the face just cut. Vanilla's own cake gets the same, since it was the one food in the game eaten in silence.
+
 ## Snacks
 
 Food you carry, that is not meat and does not come in a bowl.
 
-- **Hardboiled Egg**: an egg through the furnace or over a campfire. Vanilla has no way to eat the
-  most obvious food an animal makes, and being food at all is the point.
+- **Hardboiled Egg**: an egg through the furnace, the smoker or over a campfire. Vanilla has no way
+  to eat the most obvious food an animal makes, and being food at all is the point. The smoker
+  boils it rather than smoking it: an egg in its shell takes no smoke.
 - **Meat Sandwich**: bread, any cooked or smoked meat, and kelp. A packed lunch with no effect. The
   effects live on the bowl dishes, which cost a station and a bowl.
 - **Sushi**: dried kelp, raw cod or salmon, and wheat.
@@ -187,18 +192,9 @@ block placement when a right-click is really a bite.
 still cooks, ages and pours everything, but a connecting client has no models for the new food and
 draws it as the missing-texture placeholder.
 
-## Installation
+## Development
 
-Install server-side alongside its declared dependencies (see `fabric.mod.json`); connecting clients
-need only Pandorical. Version targets live in `gradle.properties` (Minecraft, loader, Fabric API)
-and `fabric.mod.json` (Java).
-
-## Art
-
-`generate_textures.py` draws the food out of vanilla's own pixels, `generate_models.py` gives every
-textured item a model and points the smoked foods at the vanilla look they borrow, and
-`generate_icon.py` cuts the mod's icon. All three are deterministic; re-run them after a Minecraft
-version bump.
+Installing and the art pipeline are in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## License
 

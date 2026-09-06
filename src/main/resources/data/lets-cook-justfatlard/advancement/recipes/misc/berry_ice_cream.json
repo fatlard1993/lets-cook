@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "lets-cook-justfatlard:berry_ice_cream"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_ice_cream": {
+      "conditions": {
+        "items": [
+          {
+            "items": "lets-cook-justfatlard:ice_cream"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_sweet_berries": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:sweet_berries"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ice_cream",
+      "has_sweet_berries"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "lets-cook-justfatlard:berry_ice_cream"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "lets-cook-justfatlard:whole_pumpkin_pie"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_raw_pumpkin_pie": {
+      "conditions": {
+        "items": [
+          {
+            "items": "lets-cook-justfatlard:raw_pumpkin_pie"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_pumpkin_pie"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "lets-cook-justfatlard:whole_pumpkin_pie"
+    ]
+  }
+}

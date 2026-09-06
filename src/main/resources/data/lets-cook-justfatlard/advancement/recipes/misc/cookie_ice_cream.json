@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "lets-cook-justfatlard:cookie_ice_cream"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_ice_cream": {
+      "conditions": {
+        "items": [
+          {
+            "items": "lets-cook-justfatlard:ice_cream"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_cookie": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:cookie"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ice_cream",
+      "has_cookie"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "lets-cook-justfatlard:cookie_ice_cream"
+    ]
+  }
+}

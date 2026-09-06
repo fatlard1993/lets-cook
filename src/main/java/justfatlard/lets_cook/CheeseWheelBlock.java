@@ -22,8 +22,8 @@ public class CheeseWheelBlock extends SliceableBlock {
 	private static final int SHARPER = 1;
 	private static final float RICHER = 0.15F;
 
-	public CheeseWheelBlock(Properties properties, int nutrition, float saturation, boolean keeps) {
-		super(properties, nutrition, saturation, keeps);
+	public CheeseWheelBlock(Properties properties, int nutrition, float saturation) {
+		super(properties, nutrition, saturation);
 		registerDefaultState(defaultBlockState().setValue(VINTAGE, 0));
 	}
 

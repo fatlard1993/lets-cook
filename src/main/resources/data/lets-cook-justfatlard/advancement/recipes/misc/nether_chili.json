@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "lets-cook-justfatlard:nether_chili"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_bowl": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:bowl"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_crimson_fungus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:crimson_fungus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_warped_fungus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:warped_fungus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_nether_wart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:nether_wart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bowl",
+      "has_crimson_fungus",
+      "has_warped_fungus",
+      "has_nether_wart"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "lets-cook-justfatlard:nether_chili"
+    ]
+  }
+}

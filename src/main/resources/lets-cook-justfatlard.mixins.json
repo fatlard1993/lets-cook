@@ -4,7 +4,10 @@
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
 		"SmokerFuelMixin",
-		"BarrelAgeingMixin"
+		"BarrelAgeingMixin",
+		"CakeCrumbsMixin",
+		"SmokerMenuFuelMixin",
+		"CakeAlwaysMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

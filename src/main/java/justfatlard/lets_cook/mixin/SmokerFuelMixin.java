@@ -20,12 +20,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * <p>Logs, not planks: a plank fire is a furnace fire. Anything in the log tag counts, so another
  * mod's wood works without being listed here.
  *
- * <p>Answered by burn duration rather than by a fuel test, because that is where the game decides
- * it: a duration of zero is exactly what "this is not fuel" means, and it is the one place both
- * the burning and the slot's willingness to hold something read from.
+ * <p>Three doors, because the game asks three different questions. The burn duration is what the
+ * firebox reads when it lights; the slot in the screen asks the menu whether a thing is fuel
+ * before it will hold it; a hopper asks the block entity. With only the first shut, coal sat in
+ * the slot unburnt rather than being refused, which is not the same thing at all.
  */
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class SmokerFuelMixin {
+
+	@Inject(method = "canPlaceItem", at = @At("HEAD"), cancellable = true)
+	private void letsCook$hopperFeedsWoodOnly(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+		if (!((Object) this instanceof SmokerBlockEntity)) return;
+		if (slot == 1 && !stack.is(ItemTags.LOGS)) cir.setReturnValue(false);
+	}
 
 	@Inject(method = "getBurnDuration", at = @At("HEAD"), cancellable = true)
 	private void letsCook$smokerBurnsWoodOnly(ServerLevel level, ItemStack fuel,

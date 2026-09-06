@@ -5,7 +5,7 @@
     "minecraft:bucket",
     "minecraft:sweet_berries",
     "minecraft:sugar",
-    "minecraft:egg"
+    "#minecraft:eggs"
   ],
   "result": {
     "id": "lets-cook-justfatlard:raw_sweet_berry_pie",

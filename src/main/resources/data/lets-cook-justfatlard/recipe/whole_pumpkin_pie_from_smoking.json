@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": "lets-cook-justfatlard:raw_pumpkin_pie",
+  "result": {
+    "id": "lets-cook-justfatlard:whole_pumpkin_pie",
+    "count": 1
+  }
+}

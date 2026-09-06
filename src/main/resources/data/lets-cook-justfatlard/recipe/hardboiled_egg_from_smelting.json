@@ -3,7 +3,7 @@
   "category": "food",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": "minecraft:egg",
+  "ingredient": "#minecraft:eggs",
   "result": {
     "id": "lets-cook-justfatlard:hardboiled_egg",
     "count": 1

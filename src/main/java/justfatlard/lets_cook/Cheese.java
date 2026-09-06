@@ -31,20 +31,20 @@ public final class Cheese {
 	/** How long milk takes, in ticks: one full day. */
 	private static final int AGEING = 24000;
 
-	public static final CheeseWheelBlock WHEEL = wheel("cheese_block", 3, 0.3F, false);
-	public static final CheeseWheelBlock SMOKED_WHEEL = wheel("smoked_cheese_block", 4, 0.4F, true);
+	public static final CheeseWheelBlock WHEEL = wheel("cheese_block", 3, 0.3F);
+	public static final CheeseWheelBlock SMOKED_WHEEL = wheel("smoked_cheese_block", 4, 0.4F);
 
 	public static Item BUCKET;
 	public static Item SMOKED_BUCKET;
 
-	private static CheeseWheelBlock wheel(String name, int nutrition, float saturation, boolean keeps) {
+	private static CheeseWheelBlock wheel(String name, int nutrition, float saturation) {
 		return new CheeseWheelBlock(BlockBehaviour.Properties.of()
 			.strength(0.5F)
 			.sound(SoundType.WOOL)
 			.noOcclusion()
 			.setId(ResourceKey.create(Registries.BLOCK,
 				Identifier.fromNamespaceAndPath(Main.MOD_ID, name))),
-			nutrition, saturation, keeps);
+			nutrition, saturation);
 	}
 
 	public static void register() {
@@ -73,12 +73,14 @@ public final class Cheese {
 			Identifier.fromNamespaceAndPath(Main.MOD_ID, blockName), wheel);
 
 		// Stack of one, like every other full bucket: what is in it is a whole wheel of cheese.
-		Item bucket = new BucketedFoodItem(wheel, new Item.Properties()
+		BucketedFoodItem bucket = new BucketedFoodItem(wheel, new Item.Properties()
 			.stacksTo(1)
 			.setId(ResourceKey.create(Registries.ITEM,
 				Identifier.fromNamespaceAndPath(Main.MOD_ID, itemName))));
 		Registry.register(BuiltInRegistries.ITEM,
 			Identifier.fromNamespaceAndPath(Main.MOD_ID, itemName), bucket);
+		// See Pies.item: the block-to-item map vanilla fills for its own block items
+		bucket.registerBlocks(Item.BY_BLOCK, bucket);
 		return bucket;
 	}
 

@@ -48,11 +48,21 @@ DEFAULT_JAR_GLOB = (
 WHEELS = {
     "cheese_block": "cheese",
     "smoked_cheese_block": "smoked_cheese",
-    "pumpkin_pie": "pumpkin_pie",
-    "sweet_berry_pie": "sweet_berry_pie",
-    "glow_berry_pie": "glow_berry_pie",
     "chocolate_cake": "chocolate_cake",
 }
+
+# A pie is not a cake. It sits in the same footprint and comes apart in the same seven bites, but
+# it has a rolled crust standing up round the edge and a lid with vents cut through it, and
+# under the vents is filling. Built here from boxes rather than borrowed from cake, so the lip
+# and the holes are geometry the light falls into and not a picture of one.
+PIES = ("pumpkin_pie", "sweet_berry_pie", "glow_berry_pie")
+PIE_BODY_TOP = 6      # the filling's surface
+PIE_LID_TOP = 7       # one pixel of crust over the filling
+PIE_LIP_TOP = 8       # the rolled edge, a pixel proud of the lid
+# The same squares generate_textures.py paints into the top sprite: one in the middle and one
+# towards each corner, two pixels on a side.
+PIE_VENTS = {(x + dx, y + dy) for x, y in ((7, 7), (3, 3), (11, 3), (3, 11), (11, 11))
+             for dx in (0, 1) for dy in (0, 1)}
 
 # Cheese remembers whether it aged, so it carries a second axis and needs a model per tier. The
 # count has to agree with Vintage on the Java side; a mismatch shows up as a missing model rather
@@ -105,6 +115,77 @@ def wheels(jar):
     return written
 
 
+def box(x0, y0, z0, x1, y1, z1, faces):
+    """One model element. faces maps direction to texture key, or to a dict of face settings."""
+    return {"from": [x0, y0, z0], "to": [x1, y1, z1],
+            "faces": {d: (f if isinstance(f, dict) else {"texture": f}) for d, f in faces.items()}}
+
+
+def pie_model(bites):
+    """A pie with this many bites out of it, cut from the west like cake."""
+    x0 = 1 + bites * 2
+    cut = "#inner" if bites else "#side"
+    elements = [
+        # The filling and the crust it sits in. Its top face is what the vents look down on.
+        box(x0, 0, 1, 15, PIE_BODY_TOP, 15, {
+            "down": {"texture": "#bottom", "cullface": "down"}, "up": "#fill",
+            "north": "#side", "south": "#side", "east": "#side", "west": cut}),
+    ]
+
+    # The lid: one pixel of crust over the filling, inside the lip, with the vents left out. Cut
+    # as strips of whole lid between the holes, banded by rows that share a hole pattern, so
+    # every vent gets four walls of crust of its own.
+    lid_x0 = max(x0, 2)
+    rows = {}
+    for z in range(2, 14):
+        rows.setdefault(tuple(x for x in range(lid_x0, 14) if (x, z) in PIE_VENTS), []).append(z)
+    for holes, zs in rows.items():
+        # rows with one pattern are not always contiguous (the corner vents share one), so band
+        # each contiguous run separately
+        run = [zs[0]]
+        for z in zs[1:] + [None]:
+            if z is not None and z == run[-1] + 1:
+                run.append(z)
+                continue
+            x = lid_x0
+            for hole in list(holes) + [14]:
+                if hole > x:
+                    elements.append(box(x, PIE_BODY_TOP, run[0], hole, PIE_LID_TOP, run[-1] + 1, {
+                        "up": "#top", "north": "#side", "south": "#side",
+                        "east": "#side", "west": cut if x == x0 else "#side"}))
+                x = hole + 1
+            run = [z]
+
+    # The lip: the rolled edge, a pixel wide and a pixel proud of the lid. No west bar once a
+    # slice is gone; that edge is the cut, and the cut face carries the crust band instead.
+    lip = {"up": "#top", "north": "#side", "south": "#side", "east": "#side", "west": "#side"}
+    elements.append(box(x0, PIE_BODY_TOP, 1, 15, PIE_LIP_TOP, 2, dict(lip, west=cut)))
+    elements.append(box(x0, PIE_BODY_TOP, 14, 15, PIE_LIP_TOP, 15, dict(lip, west=cut)))
+    elements.append(box(14, PIE_BODY_TOP, 1, 15, PIE_LIP_TOP, 15, lip))
+    if bites == 0:
+        elements.append(box(1, PIE_BODY_TOP, 1, 2, PIE_LIP_TOP, 15, lip))
+    return elements
+
+
+def pies():
+    """Seven bite stages and a blockstate for each pie."""
+    written = 0
+    for pie in PIES:
+        variants = {}
+        for bites in range(7):
+            name = pie if bites == 0 else f"{pie}_slice{bites}"
+            write(ASSETS / "models/block" / f"{name}.json", {
+                "textures": {face: f"{NAMESPACE}:block/{pie}_{face}"
+                             for face in ("top", "side", "bottom", "inner", "fill")}
+                            | {"particle": f"{NAMESPACE}:block/{pie}_side"},
+                "elements": pie_model(bites),
+            })
+            written += 1
+            variants[f"bites={bites}"] = {"model": f"{NAMESPACE}:block/{name}"}
+        write(ASSETS / "blockstates" / f"{pie}.json", {"variants": variants})
+    return written
+
+
 WRITTEN = set()
 
 
@@ -150,7 +231,7 @@ def main():
         })
         definition(name, f"{NAMESPACE}:item/{name}")
 
-    made = wheels(find_jar(sys.argv))
+    made = wheels(find_jar(sys.argv)) + pies()
 
     # Chocolate cake is held as the block it is, the way vanilla's cake is: no flat sprite for it,
     # because a cake in the hand is a cake.

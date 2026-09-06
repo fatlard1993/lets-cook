@@ -1,6 +1,7 @@
 package justfatlard.lets_cook;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -34,19 +35,10 @@ public class SliceableBlock extends Block {
 	private final int nutrition;
 	private final float saturation;
 
-	/**
-	 * Whether a full player can still cut a slice.
-	 *
-	 * <p>True for the smoked wheel, for the same reason smoked meat keeps: smoking is preserving,
-	 * and preserved food is what you top up on before you need it.
-	 */
-	private final boolean keeps;
-
-	public SliceableBlock(Properties properties, int nutrition, float saturation, boolean keeps) {
+	public SliceableBlock(Properties properties, int nutrition, float saturation) {
 		super(properties);
 		this.nutrition = nutrition;
 		this.saturation = saturation;
-		this.keeps = keeps;
 		registerDefaultState(getStateDefinition().any().setValue(BITES, 0));
 	}
 
@@ -83,7 +75,9 @@ public class SliceableBlock extends Block {
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
-		if (!player.canEat(keeps)) {
+		// A slice is never refused. A cake on a table is there to be cut whether or not you are
+		// hungry, which is what a cake is for; the same goes for a wheel and a pie.
+		if (!player.canEat(true)) {
 			return InteractionResult.PASS;
 		}
 
@@ -91,6 +85,9 @@ public class SliceableBlock extends Block {
 		level.gameEvent(player, GameEvent.EAT, pos);
 
 		int bites = state.getValue(BITES);
+		if (level instanceof ServerLevel server) {
+			Crumbs.bite(server, pos, bites + 1, Crumbs.crumbOf(this));
+		}
 		if (bites < MAX_BITES) {
 			level.setBlock(pos, state.setValue(BITES, bites + 1), Block.UPDATE_ALL);
 		} else {

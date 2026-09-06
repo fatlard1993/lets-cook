@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "lets-cook-justfatlard:whole_glow_berry_pie_from_smoking"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_raw_glow_berry_pie": {
+      "conditions": {
+        "items": [
+          {
+            "items": "lets-cook-justfatlard:raw_glow_berry_pie"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_glow_berry_pie"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "lets-cook-justfatlard:whole_glow_berry_pie_from_smoking"
+    ]
+  }
+}

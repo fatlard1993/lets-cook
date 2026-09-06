@@ -5,7 +5,7 @@
     "minecraft:bucket",
     "minecraft:pumpkin",
     "minecraft:sugar",
-    "minecraft:egg"
+    "#minecraft:eggs"
   ],
   "result": {
     "id": "lets-cook-justfatlard:raw_pumpkin_pie",

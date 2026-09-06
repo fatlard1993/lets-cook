@@ -435,17 +435,27 @@ def cheese_face(dark, light, seed, holes, cut):
                 if bx + dx < 16 and by + dy < 16:
                     image.putpixel((bx + dx, by + dy), shade + (255,))
 
-    # Holes are depth, not colour: a dark mouth with a lit lower lip, the way a pit catches light.
-    mouth, lip = shades[max(0, body - 120)], shades[min(255, body + 45)]
+    # Holes are square, the way a Minecraft Swiss would be: a dark mouth with its top edge deeper
+    # in shadow and a lit lip under it, so a flat square reads as a pit and not as a stain. The
+    # round-ish blobs the first pass drew smeared into the blotching; a square with a straight
+    # shadow line does not.
+    deep = shades[max(0, body - 150)]
+    mouth, lip = shades[max(0, body - 110)], shades[min(255, body + 45)]
+    taken = []
     for _ in range(holes):
-        cx, cy = rng.randrange(1, 14), rng.randrange(1, 14)
-        wide = cut and rng.random() < 0.5
-        cells = ((0, 0), (1, 0), (0, 1), (1, 1)) if wide else ((0, 0), (1, 0))
-        for dx, dy in cells:
-            image.putpixel((cx + dx, cy + dy), mouth + (255,))
-        for dx, dy in cells:
-            if cy + dy + 1 < 16 and (dx, dy + 1) not in cells:
-                image.putpixel((cx + dx, cy + dy + 1), lip + (255,))
+        for _try in range(40):
+            size = rng.choice((2, 2, 3)) if cut else 2
+            cx, cy = rng.randrange(1, 15 - size), rng.randrange(1, 14 - size)
+            if all(cx + size < ox or ox + os_ < cx or cy + size + 1 < oy or oy + os_ + 1 < cy
+                   for ox, oy, os_ in taken):
+                taken.append((cx, cy, size))
+                break
+        else:
+            continue
+        for dx in range(size):
+            for dy in range(size):
+                image.putpixel((cx + dx, cy + dy), (deep if dy == 0 else mouth) + (255,))
+            image.putpixel((cx + dx, cy + size), lip + (255,))
     return image
 
 
@@ -525,6 +535,12 @@ SUSHI = (
 )
 
 
+# Where the model punches vents through a pie lid, in top-texture pixels: one in the middle and one
+# towards each corner. generate_models.py cuts the same squares out of the lid geometry.
+PIE_VENTS = [(x + dx, y + dy) for x, y in ((7, 7), (3, 3), (11, 3), (3, 11), (11, 11))
+             for dx in (0, 1) for dy in (0, 1)]
+
+
 def pie_face(crust, fill, seed, face):
     """One face of a baked pie.
 
@@ -536,6 +552,10 @@ def pie_face(crust, fill, seed, face):
     dark, light = (fill if cut else crust)
     shades = ramp(dark, light)
     body = 190 if cut else (150 if face == "top" else 120)
+    if face == "fill":
+        dark, light = fill
+        shades = ramp(dark, light)
+        body = 170
 
     image = Image.new("RGBA", (16, 16))
     for x in range(16):
@@ -550,23 +570,39 @@ def pie_face(crust, fill, seed, face):
                 if bx + dx < 16 and by + dy < 16:
                     image.putpixel((bx + dx, by + dy), shade + (255,))
 
-    # Fruit breaking through the top crust, so the lid is not a blank disc.
-    if face == "top":
+    if face == "fill":
+        # The filling under the lid, seen through the vents. Paler and busier than the cut face
+        # so a berry or two shows where the crust was pierced.
         berries = ramp(*fill)
-        for _ in range(4):
+        for _ in range(6):
             bx, by = rng.randrange(2, 13), rng.randrange(2, 13)
             for dx, dy in ((0, 0), (1, 0), (0, 1)):
-                image.putpixel((bx + dx, by + dy), berries[210] + (255,))
+                image.putpixel((bx + dx, by + dy), berries[120] + (255,))
 
-    # The cut face is filling with the crust it was baked in still on top.
+    if face == "top":
+        # The lid is the middle twelve pixels; the ring around it is the rolled edge of the crust,
+        # which the model raises above the lid. Lit on the outside and shadowed inside, so the
+        # rim reads as a lip even in the flat sprite.
+        for i in range(1, 15):
+            for x, y in ((i, 1), (1, i)):
+                image.putpixel((x, y), shades[min(255, body + 60)] + (255,))
+            for x, y in ((i, 14), (14, i)):
+                image.putpixel((x, y), shades[max(0, body - 50)] + (255,))
+        # The vents the model cuts through the lid. The pixels underneath are never drawn, but a
+        # sprite that shows them as filling stays honest when the texture is looked at on its own.
+        berries = ramp(*fill)
+        for x, y in PIE_VENTS:
+            image.putpixel((x, y), berries[160] + (255,))
+
+    # The cut face: crust where the lid and lip were, filling below. Rows eight and nine are the
+    # two pixels of lid the model leaves at the top of a slice, so they are the ones that show.
     if cut:
         # Well down the crust ramp: a mid-crust brown sits at almost exactly pumpkin's value and
         # the band disappeared into the filling entirely.
         edge = ramp(*crust)
         for x in range(16):
-            image.putpixel((x, 0), edge[40] + (255,))
-            image.putpixel((x, 1), edge[70] + (255,))
-            image.putpixel((x, 2), edge[120] + (255,))
+            image.putpixel((x, 8), edge[40] + (255,))
+            image.putpixel((x, 9), edge[70] + (255,))
     return image
 
 
@@ -746,7 +782,7 @@ def main():
             .save(OUT / f"raw_{fruit}_pie.png")
         filled_bucket(pail, milk, *crust, craggy=True, holes=False, vent=fill, vent_width=1) \
             .save(OUT / f"whole_{fruit}_pie.png")
-        for i, face in enumerate(("top", "side", "bottom", "inner")):
+        for i, face in enumerate(("top", "side", "bottom", "inner", "fill")):
             pie_face(crust, fill, 40 + i, face).save(blocks / f"{fruit}_pie_{face}.png")
 
     # Chocolate cake is vanilla's cake through a chocolate ramp: same frosting, same crumb, same
@@ -773,7 +809,7 @@ def main():
              for prefix in ("cheese", "smoked_cheese") for tier in range(2)
              for face in ("top", "side", "bottom", "inner")}
     faces |= {f"{fruit}_pie_{face}.png" for fruit in fillings
-              for face in ("top", "side", "bottom", "inner")}
+              for face in ("top", "side", "bottom", "inner", "fill")}
     faces |= {f"chocolate_cake_{face}.png" for face in ("top", "side", "bottom", "inner")}
     gone = prune(blocks, faces)
 
