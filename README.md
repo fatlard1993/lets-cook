@@ -104,14 +104,15 @@ sharper and richer than a slice from a plain one.
 
 ## Drinks
 
-Beer, and a wine for every fruit worth pressing. Each is made twice.
+Beer, a wine for every fruit worth pressing, and mead. Each is made twice.
 
-**Crafting gets you a starter.** A water bottle, sugar and the source: wheat for beer, or an apple,
-sweet berries, glow berries, a melon slice or chorus fruit for the wines. A starter is not a drink
+**Crafting gets you a starter.** A water bottle, sugar and the source: wheat for beer, an apple,
+sweet berries, glow berries, a melon slice or chorus fruit for the wines, or a honey bottle for mead
+(which hands its glass bottle back). A starter is not a drink
 and does not pretend to be. It has no food value at all, and its name says so.
 
 **A cellar makes it a drink.** In a barrel that qualifies (underground, dark, see Cheese), beer is
-ready in half a day and wine in a day and a half. Every finished drink restores a little, is always
+ready in half a day, and wine and mead in a day and a half. Every finished drink restores a little, is always
 drinkable on a full stomach, hands the bottle back, stacks to sixteen, and takes the edge off:
 Nausea, Weakness and Mining Fatigue are cleared by any of them. Poison and Wither are deliberately
 not, because being able to drink off real damage is a different power.
@@ -124,29 +125,40 @@ not, because being able to drink off real damage is a different power.
 | Glow Berry Wine | glow berries | Night Vision, 45s |
 | Melon Wine | melon slice | Absorption, 60s |
 | Chorus Wine | chorus fruit | Slow Falling, 45s |
+| Mead | honey bottle | Resistance, 45s |
 
-**A wine left three times its minimum comes out Aged**, and its effect lasts twice as long. The
+**A wine or mead left three times its minimum comes out Aged**, and its effect lasts twice as long. The
 same drink, and what you waited for is having to drink fewer of them.
 
 ## How A Barrel Works
 
-One rule for cheese, beer and wine, so they are one mechanic with different tables rather than
+One rule for cheese, beer, wine and mead, so they are one mechanic with different tables rather than
 three that drift.
 
-**Underground and dark.** Sky light must be zero and block light seven or less. Sky light rather
-than the combined brightness, because the combined figure falls at dusk: a barrel in a field would
-qualify every night and stop at dawn, and the rule would look random to anyone who found it by
-accident.
+**Underground and dark.** Sky light must be zero and block light seven or less. Both are read in
+the room beside the barrel, the brightest of its six sides, not at the barrel itself: the light
+inside a solid block is always nought, so reading it there would make a barrel in a sunny field a
+cellar. Sky light rather than the combined brightness, because the combined figure falls at dusk: a
+barrel in a field would qualify every night and stop at dawn, and the rule would look random to
+anyone who found it by accident.
 
 **The name tells you where it is.** A barrel is opaque, and milk that is working looks exactly like
 milk that is not. So the stack says so: a starter reads `(Starter)` in your pack, `(Brewing)` or
 `(Fermenting)` once a barrel has it, and milk reads `(Ageing)`. The moment the barrel stops
 qualifying the suffix goes and the clock resets, so a mistake is visible the next time you look.
 
+**With [block-tip](https://github.com/fatlard1993/block-tip) installed, a closed barrel can be
+read.** Looking at one names the first thing fermenting in it and what it is becoming, and how it
+is getting on: `Ageing 40%` (or `Brewing`, `Fermenting`) while it works, `Ready: open it` once the
+minimum has passed, and `Too bright to age` when the room will not do. Anything in a dark barrel is working from the
+moment it goes in, so there is always a percentage to read.
+
 **Nothing has to stay loaded.** Time is counted from a stamp on the stack rather than by ticking
-the barrel. Come back in a week and it finished a week ago. The barrel is checked when it is opened
-and when it is closed, which between them cover every moment a player could care about, and a
-barrel with nothing fermenting in it costs nothing at all.
+the barrel. Come back in a week and it finished a week ago. The barrel is checked when it is opened,
+closed or filled (a hopper counts), and when somebody looks at it with block-tip, which between
+them cover every moment anything goes in or anyone could care, and a barrel with nothing fermenting
+in it costs nothing at all. A hopper hands a barrel one item at a time; starters of one kind that
+arrive within half a minute of each other are one batch, and stack as one.
 
 **Nothing collects it for you**, which is why the wait past the minimum is real and worth paying
 for. Whole stacks finish together: they all went in together and they all had the same week.
@@ -183,7 +195,7 @@ Food you carry, that is not meat and does not come in a bowl.
 
 ## Pandorical
 
-Let's Cook registers every item and block through Pandorical's content sync, with its model and
+Pandorical is required on the server; the mod will not load without it. Let's Cook registers every item and block through Pandorical's content sync, with its model and
 its stack size, so Pandorical clients draw the food and agree with the server about how deep it
 stacks. The cheese wheels and pies are registered as interactive, so a client does not predict a
 block placement when a right-click is really a bite.
@@ -191,6 +203,35 @@ block placement when a right-click is really a bite.
 **The Pandorical mod must be installed client-side** to see any of this. Without it the server
 still cooks, ages and pours everything, but a connecting client has no models for the new food and
 draws it as the missing-texture placeholder.
+
+## The butcher will teach you
+
+With [village-quests](../village-quests) installed, a butcher takes apprentices,
+and the six lessons are the six things this mod changed that the game will never
+mention: that the smoker has stopped taking coal, that smoked meat goes down on
+a full stomach, that a bowl carries the effect its ingredients implied, that
+there is always room for pudding, that a barrel in a dark cellar is a cheese
+press, and that the one dish which poisons you is meant to be cooked twice.
+
+They are lessons rather than recipes. The apprenticeship is spaced by days, the
+butcher hands over a barrel when the cheese lesson comes due, and finishing it
+gets you a smoker of your own.
+
+## And the village will ask you to cook
+
+The rest of the menu comes up as work. A villager asks you to make something
+for a neighbour, and says the recipe as they ask: the farmer wants a vegetable
+soup taken to whoever keeps walking into things on the late watch, the
+fisherman a fish chowder for the one who dives off the jetty after dropped
+hooks. You cook it, hand it over, and the neighbour tells you what it did to
+them, which is the effect or the twist the dish carries, said by somebody it
+just happened to. Then the asker wants to hear how it went.
+
+Each trade asks for what it would know: soup and pumpkin pie from farmers,
+chowder and sushi from fishermen, ice cream and potato chowder from clerics, a
+glow berry pie from librarians, beer from the smiths once they trust you, a
+chocolate cake from leatherworkers once they trust you more. Any one of the dish
+will do, and none of them repeat a butcher's lesson.
 
 ## Development
 

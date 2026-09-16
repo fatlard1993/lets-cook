@@ -24,7 +24,7 @@ import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.RemoveStatusEffectsConsumeEffect;
 
 /**
- * Beer, and a wine for every fruit worth pressing.
+ * Beer, a wine for every fruit worth pressing, and mead.
  *
  * <p>Each one is made twice. Crafting gets you a starter - a bottle of sugared water and fruit,
  * which is not a drink and does not pretend to be: it has no food value at all, and its name says
@@ -80,7 +80,9 @@ public final class Drinks {
 		new Brew("melon_wine", "minecraft:melon_slice", FERMENTING, "fermenting",
 			MobEffects.ABSORPTION, 60),
 		new Brew("chorus_wine", "minecraft:chorus_fruit", FERMENTING, "fermenting",
-			MobEffects.SLOW_FALLING, 45));
+			MobEffects.SLOW_FALLING, 45),
+		new Brew("mead", "minecraft:honey_bottle", FERMENTING, "fermenting",
+			MobEffects.RESISTANCE, 45));
 
 	private static final Map<String, Item> ITEMS = new LinkedHashMap<>();
 

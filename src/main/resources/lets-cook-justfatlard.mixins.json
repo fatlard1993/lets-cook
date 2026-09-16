@@ -5,6 +5,7 @@
 	"mixins": [
 		"SmokerFuelMixin",
 		"BarrelAgeingMixin",
+		"BarrelChangedMixin",
 		"CakeCrumbsMixin",
 		"SmokerMenuFuelMixin",
 		"CakeAlwaysMixin"

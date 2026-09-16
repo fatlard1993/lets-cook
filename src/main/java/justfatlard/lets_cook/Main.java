@@ -35,8 +35,7 @@ public class Main implements ModInitializer {
 
 		// Each smoked food wears its cooked counterpart's look: it is the same meat, kept
 		// differently, and drawing it as something else would be a lie about what it is.
-		Foods.items().forEach((name, item) ->
-			share(name, 64, "minecraft:item/" + Foods.appearanceOf(name)));
+		Foods.items().forEach((name, item) -> share(name, 64, appearanceModel(name)));
 
 		Dishes.items().forEach((name, item) ->
 			share(name, Dishes.stackOf(name), MOD_ID + ":item/" + name));
@@ -63,10 +62,28 @@ public class Main implements ModInitializer {
 
 		PandoricalApi.content().registerModAssets(MOD_ID);
 
+		// Written here rather than shipped, since which look they wear depends on Minedew Fishing.
+		for (String fish : java.util.List.of("smoked_cod", "smoked_salmon")) {
+			String definition = "{\n  \"model\": {\n    \"type\": \"minecraft:model\",\n    \"model\": \""
+				+ appearanceModel(fish) + "\"\n  }\n}\n";
+			PandoricalApi.content().registerAsset("assets/" + MOD_ID + "/items/" + fish + ".json",
+				definition.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+		}
+
 		LOGGER.info("Let's Cook loaded - {} smoked foods, {} dishes, {} snacks, {} baked, "
 				+ "{} drinks, {} things a barrel finishes, and a smoker that burns wood",
 			Foods.items().size(), Dishes.items().size(), Snacks.items().size(),
 			Pies.items().size(), Drinks.items().size(), Ferments.count());
+
+		// Guarded, and the guard is why the call sits behind its own class: naming a
+		// village-quests type here would load it whether or not that mod is installed.
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("village-quests-justfatlard")) {
+			justfatlard.lets_cook.integration.CookingLessons.register();
+			justfatlard.lets_cook.integration.CookingErrands.register();
+		}
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("block-tip")) {
+			justfatlard.lets_cook.integration.BarrelTips.register();
+		}
 	}
 
 	/**
@@ -86,6 +103,18 @@ public class Main implements ModInitializer {
 			registration.property(property);
 		}
 		PandoricalApi.content().registerBlock(MOD_ID + ":" + name, registration);
+	}
+
+	/**
+	 * The cooked counterpart's model, except that where Minedew Fishing draws cooked cod and salmon
+	 * as fillets, the smoked ones are fillets too: the same cut, kept differently.
+	 */
+	private static String appearanceModel(String name) {
+		boolean fillets = net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("minedew-fishing");
+		if (fillets && (name.equals("smoked_cod") || name.equals("smoked_salmon"))) {
+			return MOD_ID + ":item/" + name + "_fillet";
+		}
+		return "minecraft:item/" + Foods.appearanceOf(name);
 	}
 
 	private static void share(String name, int stack, String model) {

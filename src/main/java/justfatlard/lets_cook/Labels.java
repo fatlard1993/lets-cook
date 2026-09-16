@@ -61,6 +61,11 @@ public final class Labels {
 		stack.set(DataComponents.CUSTOM_NAME, unfinished(base, stage));
 	}
 
+	/** Move the clock of a stack already started, leaving its name as it is. */
+	public static void restamp(ItemStack stack, long started) {
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putLong(STARTED, started));
+	}
+
 	/**
 	 * Stop the clock and put the name back to whatever it says at rest.
 	 *

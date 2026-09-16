@@ -4,10 +4,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -28,6 +30,13 @@ public final class Ferments {
 
 	/** The brightest a cellar can be and still work. */
 	private static final int DARK_ENOUGH = 7;
+
+	/**
+	 * Stacks of one starter begun this close together are one batch. A hopper hands a barrel one
+	 * item at a time, each is stamped as it lands, and a stamp is part of the stack: without this,
+	 * sixteen starters fed in by hopper filled sixteen slots.
+	 */
+	private static final long ONE_BATCH = 600;
 
 	/**
 	 * @param result what it becomes
@@ -64,9 +73,8 @@ public final class Ferments {
 	/**
 	 * Look at what is in a barrel and move it along.
 	 *
-	 * <p>Called when a barrel is opened and when it is closed, which between them cover every
-	 * moment a player could care: closing is when something has just gone in, opening is when they
-	 * have come back to see.
+	 * <p>Called when a barrel is opened, closed or changed, and when somebody looks at it: between
+	 * them, every moment something goes in or anyone could care how it is getting on.
 	 */
 	public static boolean tend(Level level, BlockPos pos, List<ItemStack> items) {
 		boolean cellar = isCellar(level, pos);
@@ -105,6 +113,8 @@ public final class Ferments {
 			finished = ferment.done();
 		}
 
+		if (cellar) gatherBatches(items);
+
 		if (finished != null) {
 			level.playSound(null, pos, finished, SoundSource.BLOCKS, 0.6F, 0.9F);
 		}
@@ -112,15 +122,100 @@ public final class Ferments {
 	}
 
 	/**
-	 * Dark, and with no sky above it.
+	 * Puts stacks of the same starter begun within {@link #ONE_BATCH} of each other back together,
+	 * on the later stamp: the earlier ones wait a few seconds more, and nothing gets a head start.
+	 */
+	private static void gatherBatches(List<ItemStack> items) {
+		for (int into = 0; into < items.size(); into++) {
+			ItemStack batch = items.get(into);
+			if (batch.isEmpty() || !BY_INPUT.containsKey(batch.getItem())) continue;
+			long batchStarted = Labels.startedAt(batch);
+			if (batchStarted == Long.MIN_VALUE) continue;
+
+			for (int from = into + 1; from < items.size() && batch.getCount() < batch.getMaxStackSize(); from++) {
+				ItemStack other = items.get(from);
+				if (other.isEmpty() || other.getItem() != batch.getItem()) continue;
+				long otherStarted = Labels.startedAt(other);
+				if (otherStarted == Long.MIN_VALUE || Math.abs(otherStarted - batchStarted) > ONE_BATCH) continue;
+				if (batch.getCount() + other.getCount() > batch.getMaxStackSize()) continue;
+
+				if (otherStarted > batchStarted) {
+					Labels.restamp(batch, otherStarted);
+					batchStarted = otherStarted;
+				}
+				batch.grow(other.getCount());
+				items.set(from, ItemStack.EMPTY);
+			}
+		}
+	}
+
+	/** {@link #tend(Level, BlockPos, List)} for a container, through its own slots. */
+	public static boolean tend(Level level, BlockPos pos, Container barrel) {
+		List<ItemStack> items = new java.util.ArrayList<>(barrel.getContainerSize());
+		for (int slot = 0; slot < barrel.getContainerSize(); slot++) items.add(barrel.getItem(slot));
+		boolean finished = tend(level, pos, items);
+		for (int slot = 0; slot < items.size(); slot++) {
+			if (items.get(slot) != barrel.getItem(slot)) barrel.setItem(slot, items.get(slot));
+		}
+		return finished;
+	}
+
+	/** How a barrel's first ferment is getting on, for somebody looking at the barrel. */
+	public enum State { WORKING, READY, TOO_BRIGHT }
+
+	/**
+	 * @param input    what went in
+	 * @param result   what it is becoming
+	 * @param fraction how far along, nought to one; only meaningful while WORKING
+	 * @param stage    the translation key of the word it wears while it works
+	 */
+	public record Status(State state, Item input, Item result, float fraction, String stage) {}
+
+	/**
+	 * The first thing working in this barrel and how far along it is, or null when nothing in it
+	 * ferments. Read off the stamps and the room, moving nothing; a stack in a dark barrel that has
+	 * not been stamped yet reads as just begun, which is what the next {@link #tend} makes it.
+	 */
+	public static Status status(Level level, BlockPos pos, Container barrel) {
+		boolean cellar = isCellar(level, pos);
+		for (int slot = 0; slot < barrel.getContainerSize(); slot++) {
+			ItemStack stack = barrel.getItem(slot);
+			Ferment ferment = BY_INPUT.get(stack.getItem());
+			if (ferment == null) continue;
+
+			String stage = "stage.lets-cook-justfatlard." + ferment.stage();
+			if (!cellar) return new Status(State.TOO_BRIGHT, stack.getItem(), ferment.result(), 0F, stage);
+
+			long started = Labels.startedAt(stack);
+			if (started == Long.MIN_VALUE) return new Status(State.WORKING, stack.getItem(), ferment.result(), 0F, stage);
+
+			float fraction = (level.getGameTime() - started) / (float) ferment.ticks();
+			return new Status(fraction >= 1F ? State.READY : State.WORKING, stack.getItem(), ferment.result(),
+				Math.min(fraction, 1F), stage);
+		}
+		return null;
+	}
+
+	/**
+	 * Dark, and with no sky above it, in the room the barrel stands in.
+	 *
+	 * <p>Read beside the barrel rather than at it: a barrel is a solid block, and the light kept
+	 * inside a solid block is always nought, which made every barrel in the world a cellar. The
+	 * brightest open side is the room's.
 	 *
 	 * <p>Sky light rather than the combined brightness, because the combined figure falls at dusk:
 	 * a barrel in an open field would qualify every night and stop again at dawn, which is not a
 	 * cellar, and would make the rule look random to anyone who found it by accident.
 	 */
 	private static boolean isCellar(Level level, BlockPos pos) {
-		return level.getBrightness(LightLayer.SKY, pos) == 0
-			&& level.getBrightness(LightLayer.BLOCK, pos) <= DARK_ENOUGH;
+		int sky = 0;
+		int block = 0;
+		for (Direction side : Direction.values()) {
+			BlockPos beside = pos.relative(side);
+			sky = Math.max(sky, level.getBrightness(LightLayer.SKY, beside));
+			block = Math.max(block, level.getBrightness(LightLayer.BLOCK, beside));
+		}
+		return sky == 0 && block <= DARK_ENOUGH;
 	}
 
 	/** The sound of something being poured out of a barrel that worked. */

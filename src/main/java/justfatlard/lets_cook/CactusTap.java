@@ -52,6 +52,13 @@ public final class CactusTap {
 		BlockState state = level.getBlockState(pos);
 		if (!(state.getBlock() instanceof CactusBlock)) return InteractionResult.PASS;
 
+		// The plant is the column, and only its top block ages: every block below was reset to
+		// nothing the moment it stopped being the top. A player taps whichever block is at eye
+		// level, which on a grown cactus is never the top, so the age that counts is read from
+		// the top and spent there, whatever was clicked.
+		while (level.getBlockState(pos.above()).getBlock() instanceof CactusBlock) pos = pos.above();
+		state = level.getBlockState(pos);
+
 		if (state.getValue(CactusBlock.AGE) < RIPE) {
 			// Saying so, because a cactus that is not ready looks exactly like one that is, and a
 			// player who gets nothing twice concludes the feature does not exist.
