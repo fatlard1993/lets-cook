@@ -3,6 +3,11 @@
 A Fabric mod that rounds out vanilla cooking: smoking as a craft of its own, cheese, pies, stews,
 drinks, and a reason to eat something other than whichever food has the biggest number.
 
+## Screenshots
+
+![A cellar of barrels working in the dark, under one lantern](cellar.png)
+![The seven drinks: beer, five wines and mead, each its own colour](drinks.png)
+
 ## What This Mod Does
 
 Vanilla's kitchen converges on one meat, and most of its stations are the same station at
