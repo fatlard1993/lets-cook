@@ -14,6 +14,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.server.level.ServerPlayer;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Everything a barrel turns into something else, given time and a dark room.
@@ -77,6 +79,18 @@ public final class Ferments {
 	 * them, every moment something goes in or anyone could care how it is getting on.
 	 */
 	public static boolean tend(Level level, BlockPos pos, List<ItemStack> items) {
+		return tend(level, pos, items, null);
+	}
+
+	/**
+	 * The same, for a caller who knows whose hand opened the barrel.
+	 *
+	 * <p>Only the completion knows what vintage a thing reached, and only the opener can be told
+	 * about it, and the two have never been in the same room: tending happens on a block with
+	 * nobody necessarily near it. So the opener is carried in rather than the tier carried out.
+	 */
+	public static boolean tend(Level level, BlockPos pos, List<ItemStack> items,
+			@Nullable ServerPlayer opener) {
 		boolean cellar = isCellar(level, pos);
 		SoundEvent finished = null;
 
@@ -115,6 +129,9 @@ public final class Ferments {
 			if (tier > 0 && ferment.finisher() != null) {
 				ferment.finisher().apply(made, tier);
 			}
+			// Forgetting about it for long enough to reach the top vintage is the whole of the
+			// mechanic: the minimum is a wait, and the tier above it is patience nobody asked for.
+			if (tier >= Vintage.BEST) Awards.aged(opener);
 
 			items.set(slot, made);
 			finished = ferment.done();

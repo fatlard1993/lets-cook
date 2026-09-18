@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:husbandry/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:barrel"
+    },
+    "title": "Left to Itself",
+    "description": "Open a barrel on something you left in the dark long past ready",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "aged": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -32,15 +32,21 @@ public abstract class BarrelAgeingMixin {
 
 	@Inject(method = "stopOpen", at = @At("TAIL"))
 	private void letsCook$ageOnClose(ContainerUser user, CallbackInfo info) {
-		letsCook$tend();
+		// The one moment a barrel and a person are in the same place: whoever shut the lid is who
+		// gets told about what was inside.
+		letsCook$tend(user instanceof net.minecraft.server.level.ServerPlayer player ? player : null);
 	}
 
 	private void letsCook$tend() {
+		letsCook$tend(null);
+	}
+
+	private void letsCook$tend(net.minecraft.server.level.ServerPlayer opener) {
 		BlockEntity self = (BlockEntity) (Object) this;
 		Level level = self.getLevel();
 		if (level == null || level.isClientSide()) return;
 
-		if (Ferments.tend(level, self.getBlockPos(), getItems())) {
+		if (Ferments.tend(level, self.getBlockPos(), getItems(), opener)) {
 			self.setChanged();
 		}
 	}
