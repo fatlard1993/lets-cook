@@ -35,7 +35,12 @@ public final class BarrelTips {
 			String line = switch (status.state()) {
 				case WORKING -> word(status.stage()) + " " + (int) (status.fraction() * 100) + "%";
 				case READY -> "Ready: open it";
-				case TOO_BRIGHT -> "Too bright to age";
+				// What it has banked, where it has banked anything: the light holds a batch where
+				// it stands rather than ending it, and a number that stays put says that where
+				// "too bright" alone reads like a loss.
+				case TOO_BRIGHT -> status.fraction() > 0F
+					? "Too bright: held at " + (int) (status.fraction() * 100) + "%"
+					: "Too bright to age";
 			};
 			return new BlockTipApi.Tip(line, id(status.input()), id(status.result()));
 		});

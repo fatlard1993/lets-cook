@@ -85,18 +85,30 @@ public final class Ferments {
 			Ferment ferment = BY_INPUT.get(stack.getItem());
 			if (ferment == null) continue;
 
-			if (!cellar) {
-				Labels.clear(stack);
-				continue;
-			}
-
+			long now = level.getGameTime();
 			long started = Labels.startedAt(stack);
 			if (started == Long.MIN_VALUE) {
-				Labels.begin(stack, level.getGameTime(), ferment.base(), ferment.stage());
+				// A batch still needs a cellar to begin in: that is the rule, and it is the one
+				// part of it a player can see the moment they get it wrong, because nothing
+				// starts.
+				if (cellar) Labels.begin(stack, now, ferment.base(), ferment.stage());
+				Labels.note(stack, now, cellar);
 				continue;
 			}
 
-			long elapsed = level.getGameTime() - started;
+			// Light does not undo the work any more; it only fails to count. The stretch since the
+			// last look is credited to the room that look found, so opening the cellar door costs
+			// nothing - the dark stretch behind it is already banked - while a room left lit hands
+			// its time back on the next look and the batch stands still instead of dying. It used
+			// to throw the stamp away outright, which meant checking on a cheese destroyed it.
+			long seen = Labels.seenAt(stack);
+			if (seen != Long.MIN_VALUE && !Labels.seenDark(stack)) {
+				started += now - seen;
+				Labels.restamp(stack, started);
+			}
+			Labels.note(stack, now, cellar);
+
+			long elapsed = now - started;
 			if (elapsed < ferment.ticks()) continue;
 
 			// Whole stack at once: they all went in together and they all had the same week.
@@ -184,14 +196,22 @@ public final class Ferments {
 			if (ferment == null) continue;
 
 			String stage = "stage.lets-cook-justfatlard." + ferment.stage();
-			if (!cellar) return new Status(State.TOO_BRIGHT, stack.getItem(), ferment.result(), 0F, stage);
-
 			long started = Labels.startedAt(stack);
-			if (started == Long.MIN_VALUE) return new Status(State.WORKING, stack.getItem(), ferment.result(), 0F, stage);
 
-			float fraction = (level.getGameTime() - started) / (float) ferment.ticks();
+			// Nothing started, in a room that cannot start it: the one case where too bright is
+			// the whole story.
+			if (started == Long.MIN_VALUE) {
+				return new Status(cellar ? State.WORKING : State.TOO_BRIGHT, stack.getItem(),
+					ferment.result(), 0F, stage);
+			}
+
+			// A lit room stops the clock rather than emptying it, so a batch caught in one has a
+			// figure worth showing: what it had banked before the light arrived.
+			float fraction = Math.min((level.getGameTime() - started) / (float) ferment.ticks(), 1F);
+			if (!cellar) return new Status(State.TOO_BRIGHT, stack.getItem(), ferment.result(), fraction, stage);
+
 			return new Status(fraction >= 1F ? State.READY : State.WORKING, stack.getItem(), ferment.result(),
-				Math.min(fraction, 1F), stage);
+				fraction, stage);
 		}
 		return null;
 	}

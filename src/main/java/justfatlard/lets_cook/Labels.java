@@ -66,32 +66,51 @@ public final class Labels {
 		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putLong(STARTED, started));
 	}
 
-	/**
-	 * Stop the clock and put the name back to whatever it says at rest.
-	 *
-	 * <p>Read off the item's own default rather than passed in, because the two cases disagree
-	 * about what rest means and neither caller should have to know: a starter goes back to saying
-	 * {@code (Starter)}, and a bucket of milk goes back to being a bucket of milk. Clearing the
-	 * component outright would strip a starter's name along with the brewing one, since a removal
-	 * on a stack hides the item's default as well as the patch over it.
-	 */
-	public static void clear(ItemStack stack) {
-		if (startedAt(stack) == Long.MIN_VALUE) return;
-		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.remove(STARTED));
-
-		Component resting = stack.getItem().components().get(DataComponents.CUSTOM_NAME);
-		if (resting == null) {
-			stack.remove(DataComponents.CUSTOM_NAME);
-		} else {
-			stack.set(DataComponents.CUSTOM_NAME, resting);
-		}
-	}
-
 	/** The tick this stack started working, or {@code Long.MIN_VALUE} if it is not. */
 	public static long startedAt(ItemStack stack) {
 		CustomData data = stack.get(DataComponents.CUSTOM_DATA);
 		if (data == null) return Long.MIN_VALUE;
 		CompoundTag tag = data.copyTag();
 		return tag.contains(STARTED) ? tag.getLongOr(STARTED, Long.MIN_VALUE) : Long.MIN_VALUE;
+	}
+
+	/** When this stack was last looked at, and whether the room was dark when it was. */
+	private static final String SEEN = "seen";
+	private static final String SEEN_DARK = "seen_dark";
+
+	/**
+	 * Remember this look: the tick it happened on, and the room it happened in.
+	 *
+	 * <p>Nothing here ticks. A barrel is read when somebody opens it, closes it, changes it or
+	 * looks at it, and between two of those the room could have been anything. So the stretch
+	 * between two looks is credited to the room the earlier one found, which is the only thing
+	 * about it that was ever observed.
+	 */
+	public static void note(ItemStack stack, long now, boolean dark) {
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
+			tag.putLong(SEEN, now);
+			tag.putBoolean(SEEN_DARK, dark);
+		});
+	}
+
+	/** The tick this stack was last looked at, or {@code Long.MIN_VALUE} if it never was. */
+	public static long seenAt(ItemStack stack) {
+		CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+		if (data == null) return Long.MIN_VALUE;
+		CompoundTag tag = data.copyTag();
+		return tag.contains(SEEN) ? tag.getLongOr(SEEN, Long.MIN_VALUE) : Long.MIN_VALUE;
+	}
+
+	/**
+	 * Whether the room was dark at that last look.
+	 *
+	 * <p>Dark where nothing was ever noted, which is what every stack stamped before this was
+	 * written looks like: they were only ever stamped in the dark, since a lit barrel used to
+	 * throw the stamp away instead of keeping it.
+	 */
+	public static boolean seenDark(ItemStack stack) {
+		CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+		if (data == null) return true;
+		return data.copyTag().getBooleanOr(SEEN_DARK, true);
 	}
 }
