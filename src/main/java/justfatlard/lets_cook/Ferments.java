@@ -96,14 +96,9 @@ public final class Ferments {
 				continue;
 			}
 
-			// Light does not undo the work any more; it only fails to count. The stretch since the
-			// last look is credited to the room that look found, so opening the cellar door costs
-			// nothing - the dark stretch behind it is already banked - while a room left lit hands
-			// its time back on the next look and the batch stands still instead of dying. It used
-			// to throw the stamp away outright, which meant checking on a cheese destroyed it.
-			long seen = Labels.seenAt(stack);
-			if (seen != Long.MIN_VALUE && !Labels.seenDark(stack)) {
-				started += now - seen;
+			long counted = counting(stack, started, now);
+			if (counted != started) {
+				started = counted;
 				Labels.restamp(stack, started);
 			}
 			Labels.note(stack, now, cellar);
@@ -172,6 +167,26 @@ public final class Ferments {
 		return finished;
 	}
 
+	/**
+	 * The clock this stack is really on: its stamp, moved on past any stretch that began in the
+	 * light.
+	 *
+	 * <p>Light does not undo the work; it only fails to count. The stretch since the last look is
+	 * credited to the room that look found, so opening the cellar door costs nothing - the dark
+	 * stretch behind it is already banked - while a room left lit hands its time back at the next
+	 * look and the batch stands still instead of dying. It used to throw the stamp away outright,
+	 * which meant checking on a cheese destroyed it.
+	 *
+	 * <p>Both the tending and the tip read it here. They did not, once, and the tip said "Ready:
+	 * open it" over a barrel that then refused to be done: the reader was counting a lit stretch
+	 * the writer was about to hand back. Two answers to one question is one answer too many.
+	 */
+	private static long counting(ItemStack stack, long started, long now) {
+		long seen = Labels.seenAt(stack);
+		if (seen == Long.MIN_VALUE || Labels.seenDark(stack)) return started;
+		return started + (now - seen);
+	}
+
 	/** How a barrel's first ferment is getting on, for somebody looking at the barrel. */
 	public enum State { WORKING, READY, TOO_BRIGHT }
 
@@ -207,7 +222,8 @@ public final class Ferments {
 
 			// A lit room stops the clock rather than emptying it, so a batch caught in one has a
 			// figure worth showing: what it had banked before the light arrived.
-			float fraction = Math.min((level.getGameTime() - started) / (float) ferment.ticks(), 1F);
+			long now = level.getGameTime();
+			float fraction = Math.min((now - counting(stack, started, now)) / (float) ferment.ticks(), 1F);
 			if (!cellar) return new Status(State.TOO_BRIGHT, stack.getItem(), ferment.result(), fraction, stage);
 
 			return new Status(fraction >= 1F ? State.READY : State.WORKING, stack.getItem(), ferment.result(),
