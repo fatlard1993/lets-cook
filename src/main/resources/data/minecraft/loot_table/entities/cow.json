@@ -7,40 +7,6 @@
           "type": "minecraft:item",
           "modifier": [
             {
-              "type": "minecraft:furnace_smelt",
-              "condition": {
-                "type": "minecraft:any_of",
-                "terms": [
-                  {
-                    "type": "minecraft:entity_properties",
-                    "entity": "this",
-                    "predicate": {
-                      "minecraft:flags": {
-                        "is_on_fire": true
-                      }
-                    }
-                  },
-                  {
-                    "type": "minecraft:entity_properties",
-                    "entity": "direct_attacker",
-                    "predicate": {
-                      "minecraft:equipment": {
-                        "mainhand": {
-                          "predicates": {
-                            "minecraft:enchantments": [
-                              {
-                                "enchantments": "#minecraft:smelts_loot"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            },
-            {
               "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
@@ -58,13 +24,25 @@
               "enchantment": "minecraft:looting"
             }
           ],
-          "name": "minecraft:cod",
-          "weight": 3
-        },
+          "name": "minecraft:leather"
+        }
+      ],
+      "rolls": 1
+    },
+    {
+      "entries": [
         {
           "type": "minecraft:item",
           "modifier": [
             {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3,
+                "min": 1
+              }
+            },
+            {
               "type": "minecraft:furnace_smelt",
               "condition": {
                 "type": "minecraft:any_of",
@@ -99,14 +77,6 @@
               }
             },
             {
-              "type": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 2,
-                "min": 0
-              }
-            },
-            {
               "type": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
@@ -116,7 +86,7 @@
               "enchantment": "minecraft:looting"
             }
           ],
-          "name": "minecraft:salmon"
+          "name": "minecraft:beef"
         }
       ],
       "rolls": 1
@@ -127,46 +97,6 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:mutton",
-          "modifier": [
-            {
-              "type": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 1.0,
-                "max": 2.0
-              }
-            },
-            {
-              "type": "minecraft:enchanted_count_increase",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 0.0,
-                "max": 1.0
-              },
-              "enchantment": "minecraft:looting"
-            },
-            {
-              "type": "minecraft:furnace_smelt",
-              "condition": {
-                "type": "minecraft:entity_properties",
-                "entity": "this",
-                "predicate": {
-                  "minecraft:flags": {
-                    "is_on_fire": true
-                  }
-                }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:beef",
           "modifier": [
             {
               "type": "minecraft:set_count",
@@ -202,5 +132,5 @@
       ]
     }
   ],
-  "random_sequence": "minecraft:entities/polar_bear"
+  "random_sequence": "minecraft:entities/cow"
 }

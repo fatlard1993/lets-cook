@@ -750,8 +750,8 @@ def main():
     # Shelled and boiled: vanilla's egg, white all through.
     boiled_egg(art.get("egg")).save(OUT / "hardboiled_egg.png")
 
-    # Beer, wine and mead, twice each. A starter is the same bottle gone cloudy: murky and grey-shifted,
-    # so a shelf of them reads at a glance as the ones that are not ready.
+    # Beer, wine, mead and vodka, twice each. A starter is the same bottle gone cloudy: murky and
+    # grey-shifted, so a shelf of them reads at a glance as the ones that are not ready.
     for drink, done, raw in (
             ("beer", (0xC8, 0x8A, 0x18), (0x9A, 0x86, 0x5A)),
             ("apple_wine", (0xE0, 0xC8, 0x4A), (0xA8, 0xA0, 0x74)),
@@ -759,7 +759,10 @@ def main():
             ("glow_berry_wine", (0xF0, 0xB0, 0x2E), (0xB0, 0x96, 0x60)),
             ("melon_wine", (0xD8, 0x5A, 0x6E), (0xA0, 0x78, 0x7A)),
             ("chorus_wine", (0x8A, 0x4A, 0xC8), (0x76, 0x66, 0x8A)),
-            ("mead", (0xB8, 0x52, 0x12), (0x9E, 0x7E, 0x62))):
+            ("mead", (0xB8, 0x52, 0x12), (0x9E, 0x7E, 0x62)),
+            # The one clear spirit here, so the colour is all beetroot: bright where a wine is
+            # dark, or the two reds sit next to each other on a shelf and read as one drink.
+            ("beetroot_vodka", (0xD2, 0x2C, 0x78), (0x9C, 0x6E, 0x80))):
         tinted_bottle(overlay, glass, done, bubbles=7 if drink == "beer" else 0, seed=4) \
             .save(OUT / f"{drink}.png")
         tinted_bottle(overlay, glass, raw).save(OUT / f"{drink}_starter.png")

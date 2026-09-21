@@ -3,8 +3,7 @@
   "category": "misc",
   "ingredients": [
     "minecraft:dried_kelp",
-    "#lets-cook-justfatlard:sushi_fish",
-    "minecraft:wheat"
+    "#lets-cook-justfatlard:sushi_fish"
   ],
   "result": {
     "id": "lets-cook-justfatlard:sushi",

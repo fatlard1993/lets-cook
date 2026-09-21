@@ -1,13 +1,13 @@
 {
   "type": "minecraft:entity",
-  "random_sequence": "minecraft:entities/goat",
+  "random_sequence": "minecraft:entities/sniffer",
   "pools": [
     {
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:mutton",
+          "name": "minecraft:beef",
           "modifier": [
             {
               "type": "minecraft:set_count",
@@ -47,7 +47,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:beef",
+          "name": "minecraft:mutton",
           "modifier": [
             {
               "type": "minecraft:set_count",

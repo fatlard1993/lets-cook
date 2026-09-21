@@ -1,6 +1,6 @@
 {
   "type": "minecraft:entity",
-  "random_sequence": "minecraft:entities/goat",
+  "random_sequence": "minecraft:entities/wolf",
   "pools": [
     {
       "rolls": 1,

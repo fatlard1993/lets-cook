@@ -1,13 +1,25 @@
 {
   "type": "minecraft:entity",
-  "random_sequence": "minecraft:entities/goat",
   "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 1
+          },
+          "name": "minecraft:bamboo"
+        }
+      ],
+      "rolls": 1
+    },
     {
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:mutton",
+          "name": "minecraft:beef",
           "modifier": [
             {
               "type": "minecraft:set_count",
@@ -47,7 +59,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:beef",
+          "name": "minecraft:mutton",
           "modifier": [
             {
               "type": "minecraft:set_count",
@@ -82,5 +94,6 @@
         }
       ]
     }
-  ]
+  ],
+  "random_sequence": "minecraft:entities/panda"
 }

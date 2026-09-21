@@ -1,0 +1,27 @@
+{
+  "overview": [
+    "Rounds out vanilla cooking: smoking as a craft of its own, cheese, pies, stews and drinks, and reasons to eat something other than whichever food has the biggest number.",
+    "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
+  ],
+  "versions": {
+    "1.1.0": [
+      "Every animal worth butchering gives meat now, and the bigger ones give two cuts: a main cut in quantity with a little of the second alongside it. Wolves, cats and ocelots are on that list, tame ones included.",
+      "Beetroot Vodka: three days in a dark barrel, twice as long as any wine, and the only drink here that carries Fire Resistance. Mead takes two water bottles and a honey bottle now, no sugar at all, and makes two.",
+      "Pies take wheat alongside the fruit, sushi no longer does, and vanilla's pumpkin pie is the Pumpkin Tart, so the slice you carry and the pie you cut from can sit side by side."
+    ],
+    "1.0.3": [
+      "A barrel and its block tip read one clock now, so a cheese that says it is ready is ready, and a barrel you left long enough to reach its top vintage earns an advancement when you open it."
+    ],
+    "1.0.2": [
+      "Opening the cellar door no longer destroys what is ageing. A lit room holds a batch where it stands instead of ending it, and the tip says it is being held rather than leaving a number that has quietly stopped."
+    ],
+    "1.0.1": [
+      "Mead, brewed from honey, water and sugar, fermenting like the wines for Resistance.",
+      "A closed barrel says what it is making and how far along, a hopper filling one starts it and a hopper draining one takes what is ready, and a cellar's darkness is read from the room instead of from inside the barrel, which used to make every barrel in the world a cellar."
+    ],
+    "1.0.0": [
+      "The kitchen opens: smoking as its own craft, cheese aged in a barrel, pies, stews and drinks, and foods with reasons to exist beyond the size of the bar they restore.",
+      "Every food smokes, and beef comes off the animal as the fatty cut."
+    ]
+  }
+}

@@ -1,6 +1,5 @@
 package justfatlard.lets_cook;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +23,19 @@ import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.RemoveStatusEffectsConsumeEffect;
 
 /**
- * Beer, a wine for every fruit worth pressing, and mead.
+ * Beer, a wine for every fruit worth pressing, mead, and one spirit.
  *
  * <p>Each one is made twice. Crafting gets you a starter - a bottle of sugared water and fruit,
  * which is not a drink and does not pretend to be: it has no food value at all, and its name says
  * {@code (Starter)}. A dark cellar and enough time turns it into the real thing. See
  * {@link Ferments} for the barrel and {@link Labels} for how a bottle tells you which of the three
  * states it is in.
+ *
+ * <p>Mead is the one that takes no sugar, and the one that makes two. Every other starter needs
+ * something for the yeast to work on that the fruit alone will not give it; honey already is that,
+ * and asking for sugar beside it was asking twice for the same thing. Honey is also thick enough to
+ * let down, so a honey bottle and two waters come out as two starters and the honey's empty glass -
+ * the same three bottles that went in.
  *
  * <p>Beer is quick and wine is slow, which is the only difference between them worth having: they
  * cost the same bottle and the same sugar, so what you are really choosing is how long you are
@@ -63,26 +68,35 @@ public final class Drinks {
 	private static final int FERMENTING = 36000;
 
 	/**
-	 * @param source what goes in the bottle besides water and sugar
-	 * @param stage  the word it wears while the barrel has it
+	 * Vodka takes three days, which is twice any wine.
+	 *
+	 * <p>It is the one thing here that is not simply left alone to turn: a spirit is the drink you
+	 * meant to make rather than the one that happened, and the wait is the only way a barrel can
+	 * say so.
 	 */
-	private record Brew(String name, String source, int ticks, String stage,
+	private static final int DISTILLING = 72000;
+
+	/**
+	 * What each brew is made from lives in its recipe and only there. It used to be a field here
+	 * as well, read by nothing, which is one more place for the answer to drift away from the one
+	 * the game actually uses.
+	 *
+	 * @param stage the word it wears while the barrel has it
+	 */
+	private record Brew(String name, int ticks, String stage,
 			Holder<MobEffect> effect, int seconds) {}
 
 	private static final List<Brew> BREWS = List.of(
-		new Brew("beer", "minecraft:wheat", BREWING, "brewing", MobEffects.STRENGTH, 45),
-		new Brew("apple_wine", "minecraft:apple", FERMENTING, "fermenting",
-			MobEffects.REGENERATION, 6),
-		new Brew("berry_wine", "minecraft:sweet_berries", FERMENTING, "fermenting",
-			MobEffects.SPEED, 45),
-		new Brew("glow_berry_wine", "minecraft:glow_berries", FERMENTING, "fermenting",
-			MobEffects.NIGHT_VISION, 45),
-		new Brew("melon_wine", "minecraft:melon_slice", FERMENTING, "fermenting",
-			MobEffects.ABSORPTION, 60),
-		new Brew("chorus_wine", "minecraft:chorus_fruit", FERMENTING, "fermenting",
-			MobEffects.SLOW_FALLING, 45),
-		new Brew("mead", "minecraft:honey_bottle", FERMENTING, "fermenting",
-			MobEffects.RESISTANCE, 45));
+		new Brew("beer", BREWING, "brewing", MobEffects.STRENGTH, 45),
+		new Brew("apple_wine", FERMENTING, "fermenting", MobEffects.REGENERATION, 6),
+		new Brew("berry_wine", FERMENTING, "fermenting", MobEffects.SPEED, 45),
+		new Brew("glow_berry_wine", FERMENTING, "fermenting", MobEffects.NIGHT_VISION, 45),
+		new Brew("melon_wine", FERMENTING, "fermenting", MobEffects.ABSORPTION, 60),
+		new Brew("chorus_wine", FERMENTING, "fermenting", MobEffects.SLOW_FALLING, 45),
+		new Brew("mead", FERMENTING, "fermenting", MobEffects.RESISTANCE, 45),
+		// Fire resistance because it burns going down, and because it is the one effect no other
+		// drink here carries - a spirit that did what a beer does would not be worth three days.
+		new Brew("beetroot_vodka", DISTILLING, "distilling", MobEffects.FIRE_RESISTANCE, 45));
 
 	private static final Map<String, Item> ITEMS = new LinkedHashMap<>();
 
@@ -91,21 +105,12 @@ public final class Drinks {
 	/** Every bottle stacks sixteen deep, the way honey does. */
 	public static int stackOf(String name) { return 16; }
 
-	/** What each drink is made from, for the recipe generator and nothing else. */
-	public static List<String[]> recipes() {
-		List<String[]> out = new ArrayList<>();
-		for (Brew brew : BREWS) {
-			out.add(new String[] {brew.name(), brew.source()});
-		}
-		return out;
-	}
-
 	public static void register() {
 		for (Brew brew : BREWS) {
 			String key = "item." + Main.MOD_ID + "." + brew.name();
 
-			// Sugared water with fruit in it. No food value: an unfinished brew is not a drink,
-			// and giving it one would make the barrel optional.
+			// Sugared water with fruit in it, or watered honey. No food value: an unfinished brew
+			// is not a drink, and giving it one would make the barrel optional.
 			Item starter = add(brew.name() + "_starter", new Item.Properties()
 				.stacksTo(16)
 				.component(DataComponents.CUSTOM_NAME, Labels.starter(key)));

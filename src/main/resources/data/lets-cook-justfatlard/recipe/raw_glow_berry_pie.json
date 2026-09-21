@@ -5,7 +5,8 @@
     "minecraft:bucket",
     "minecraft:glow_berries",
     "minecraft:sugar",
-    "#minecraft:eggs"
+    "#minecraft:eggs",
+    "minecraft:wheat"
   ],
   "result": {
     "id": "lets-cook-justfatlard:raw_glow_berry_pie",

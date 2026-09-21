@@ -11,19 +11,11 @@
         }
       }
     },
-    {
-      "fabric:type": "fabric:components",
-      "base": "minecraft:potion",
-      "components": {
-        "minecraft:potion_contents": {
-          "potion": "minecraft:water"
-        }
-      }
-    },
-    "minecraft:honey_bottle"
+    "minecraft:sugar",
+    "minecraft:beetroot"
   ],
   "result": {
-    "id": "lets-cook-justfatlard:mead_starter",
-    "count": 2
+    "id": "lets-cook-justfatlard:beetroot_vodka_starter",
+    "count": 1
   }
 }

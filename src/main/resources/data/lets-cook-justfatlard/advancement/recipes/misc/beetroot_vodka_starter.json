@@ -3,25 +3,15 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipes": "lets-cook-justfatlard:raw_glow_berry_pie"
+        "recipes": "lets-cook-justfatlard:beetroot_vodka_starter"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "has_bucket": {
+    "has_potion": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:bucket"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_glow_berries": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:glow_berries"
+            "items": "minecraft:potion"
           }
         ]
       },
@@ -37,21 +27,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_eggs": {
+    "has_beetroot": {
       "conditions": {
         "items": [
           {
-            "items": "#minecraft:eggs"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_wheat": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:wheat"
+            "items": "minecraft:beetroot"
           }
         ]
       },
@@ -61,16 +41,14 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_bucket",
-      "has_glow_berries",
+      "has_potion",
       "has_sugar",
-      "has_eggs",
-      "has_wheat"
+      "has_beetroot"
     ]
   ],
   "rewards": {
     "recipes": [
-      "lets-cook-justfatlard:raw_glow_berry_pie"
+      "lets-cook-justfatlard:beetroot_vodka_starter"
     ]
   }
 }

@@ -1,40 +1,13 @@
 {
   "type": "minecraft:entity",
+  "random_sequence": "minecraft:entities/armadillo",
   "pools": [
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "modifier": [
-            {
-              "type": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 2,
-                "min": 1
-              }
-            },
-            {
-              "type": "minecraft:enchanted_count_increase",
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "enchantment": "minecraft:looting"
-            }
-          ],
-          "name": "minecraft:feather"
-        }
-      ],
-      "rolls": 1
-    },
     {
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:chicken",
+          "name": "minecraft:rabbit",
           "modifier": [
             {
               "type": "minecraft:set_count",
@@ -69,6 +42,5 @@
         }
       ]
     }
-  ],
-  "random_sequence": "minecraft:entities/parrot"
+  ]
 }

@@ -231,6 +231,16 @@ def main():
         })
         definition(name, f"{NAMESPACE}:item/{name}")
 
+    # Borrowed from Minedew Fishing: where that mod is installed, a smoked fillet wears its cooked
+    # fillet, there being no texture of ours behind it. Written here rather than kept by hand
+    # because the prune at the end deletes whatever this run did not write - which quietly ate both
+    # of these, and the fillet integration with them, every single time this script ran.
+    for cut in ("cod", "salmon"):
+        write(ASSETS / "models/item" / f"smoked_{cut}_fillet.json", {
+            "parent": "minecraft:item/generated",
+            "textures": {"layer0": f"minedew-fishing:item/cooked_{cut}_fillet"},
+        })
+
     made = wheels(find_jar(sys.argv)) + pies()
 
     # Chocolate cake is held as the block it is, the way vanilla's cake is: no flat sprite for it,
