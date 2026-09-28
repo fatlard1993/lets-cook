@@ -1,7 +1,6 @@
 package justfatlard.lets_cook.mixin;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.SmokerBlockEntity;
@@ -17,8 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * firebox matters in a way it does not for a furnace. Coal in a smoker was always slightly absurd;
  * refusing it makes the smoker a wood-fired thing and gives every forest a use it did not have.
  *
- * <p>Logs, not planks: a plank fire is a furnace fire. Anything in the log tag counts, so another
- * mod's wood works without being listed here.
+ * <p>Wood, and only wood it is worth eating the smoke of. Which woods, in which forms, and for
+ * how long is {@link justfatlard.lets_cook.SmokeWood}'s business.
+ *
+ * <p>How long each one burns is {@link justfatlard.lets_cook.SmokeWood}'s business: vanilla gives
+ * every log the same 300 ticks, which is three items out of a whole tree trunk and says nothing
+ * about which tree it came from.
  *
  * <p>Three doors, because the game asks three different questions. The burn duration is what the
  * firebox reads when it lights; the slot in the screen asks the menu whether a thing is fuel
@@ -31,15 +34,13 @@ public abstract class SmokerFuelMixin {
 	@Inject(method = "canPlaceItem", at = @At("HEAD"), cancellable = true)
 	private void letsCook$hopperFeedsWoodOnly(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
 		if (!((Object) this instanceof SmokerBlockEntity)) return;
-		if (slot == 1 && !stack.is(ItemTags.LOGS)) cir.setReturnValue(false);
+		if (slot == 1 && !justfatlard.lets_cook.SmokeWood.burns(stack)) cir.setReturnValue(false);
 	}
 
 	@Inject(method = "getBurnDuration", at = @At("HEAD"), cancellable = true)
 	private void letsCook$smokerBurnsWoodOnly(ServerLevel level, ItemStack fuel,
 			CallbackInfoReturnable<Integer> cir) {
 		if (!((Object) this instanceof SmokerBlockEntity)) return;
-		if (fuel.is(ItemTags.LOGS)) return;
-
-		cir.setReturnValue(0);
+		cir.setReturnValue(justfatlard.lets_cook.SmokeWood.burnTicks(fuel));
 	}
 }

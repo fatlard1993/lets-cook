@@ -4,6 +4,18 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.2.1": [
+      "A smoker takes wooden blocks from other mods too, not only the shapes vanilla ships.",
+      "Wood Floor's floors, Fence Posts' posts and Moredoor's doors all burn."
+    ],
+    "1.2.0": [
+      "A log in a smoker burns far longer than it did, and how long depends on the tree.",
+      "Dense hardwoods last: mangrove, acacia and cherry go furthest, then oak, then birch and poplar.",
+      "Spruce is refused. It is resinous, and resin smoke tastes of itself and coats what you are cooking.",
+      "Any wooden offcut burns now, not only logs: planks, stairs, slabs, fences, signs, a spare boat.",
+      "An offcut is worth what it cost in wood, and still carries the flavour of the tree it came from.",
+      "Bamboo is a grass and the nether stems are a fungus; neither is much of a smoking wood."
+    ],
     "1.1.0": [
       "Every animal worth butchering gives meat, and the bigger ones give two cuts.",
       "A main cut in quantity, with a little of the second alongside it.",
