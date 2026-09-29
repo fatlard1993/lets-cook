@@ -57,6 +57,14 @@ public final class Snacks {
 				.saturationModifier(0.8F)
 				.build()));
 
+		// Dough and salt, twisted and baked. The kelp is the salt: the sea is where the game keeps
+		// it, and a pretzel without it is just bread in a knot.
+		add("pretzel", 64, new Item.Properties()
+			.food(new FoodProperties.Builder()
+				.nutrition(5)
+				.saturationModifier(0.6F)
+				.build()));
+
 		add("sushi", 64, new Item.Properties()
 			.food(new FoodProperties.Builder()
 				.nutrition(6)

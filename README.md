@@ -265,6 +265,9 @@ Food you carry, that is not meat and does not come in a bowl.
   effects live on the bowl dishes, which cost a station and a bowl.
 - **Sushi**: dried kelp and raw cod or salmon. No wheat: the kelp is the wrap and the fish is
   the rest of it.
+- **Pretzel**: two wheat and dried kelp. Dough and salt, twisted and baked - the kelp is the
+  salt, because the sea is where the game keeps it. A snack, and the reason one exists at all
+  is that Hemp Craft's rope icon spent a while being mistaken for one.
 - **Caramel Apple**: apple, sugar and a stick. A pudding, so there is always room for one.
 - **Cactus Juice**: crouch and right-click a cactus with an empty glass bottle. A cactus is a plant
   full of water standing in the one biome with none. It must have grown a little first, and tapping

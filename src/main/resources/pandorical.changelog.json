@@ -4,6 +4,9 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.3.0": [
+      "Pretzels: two wheat and dried kelp, twisted and baked. The kelp is the salt."
+    ],
     "1.2.2": [
       "The smoker's fuel slot takes every offcut the firebox will burn.",
       "Planks, stairs, slabs, gates and signs were refused at the screen while the firebox would have burned them."

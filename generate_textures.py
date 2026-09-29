@@ -515,6 +515,11 @@ SANDWICH = (
 # and widening every row of the top to the same span made the fish a rectangle - an ellipse drawn
 # with equal rows is just a square with the corners still on. Rows that narrow toward the top, and
 # a wall lit down its near side, are the whole difference between a cylinder and a slab.
+PRETZEL_CRUST = (0x5A, 0x33, 0x14)
+PRETZEL_BODY = (0x9A, 0x5E, 0x24)
+PRETZEL_LIT = (0xC8, 0x8E, 0x42)
+PRETZEL_SALT = (0xEE, 0xE4, 0xD2)
+
 SUSHI = (
     "................",
     "................",
@@ -603,6 +608,45 @@ def pie_face(crust, fill, seed, face):
         for x in range(16):
             image.putpixel((x, 8), edge[40] + (255,))
             image.putpixel((x, 9), edge[70] + (255,))
+    return image
+
+
+def pretzel():
+    """A pretzel: the belly loop, and the two arms crossed over the top of it.
+
+    Drawn as a rope along a path rather than as a shape with holes cut in it, which is the whole
+    difference. A disc with three holes reads as a paw print, and a ring with a bar across it
+    reads as - well, as Hemp Craft's rope item used to, which is why this one exists.
+    """
+    import math
+
+    def ellipse(cx, cy, rx, ry, a0, a1, steps=140):
+        return [(round(cx + rx * math.cos(math.radians(a0 + (a1 - a0) * i / steps))),
+                 round(cy + ry * math.sin(math.radians(a0 + (a1 - a0) * i / steps))))
+                for i in range(steps + 1)]
+
+    def segment(x0, y0, x1, y1, steps=24):
+        return [(round(x0 + (x1 - x0) * i / steps), round(y0 + (y1 - y0) * i / steps))
+                for i in range(steps + 1)]
+
+    dough = set()
+    for path in (ellipse(7.4, 9.5, 5.4, 4.1, -35, 215),      # the belly
+                 segment(3.6, 7.0, 10.0, 1.6),               # one arm, over
+                 segment(10.8, 7.0, 4.4, 1.6)):              # and the other, under
+        for x, y in path:
+            for dx in range(2):
+                for dy in range(2):
+                    if 0 <= x + dx < 16 and 0 <= y + dy < 16:
+                        dough.add((x + dx, y + dy))
+
+    image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    pixels = image.load()
+    for x, y in dough:
+        rim = any((x + dx, y + dy) not in dough for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        pixels[x, y] = PRETZEL_CRUST if rim else (PRETZEL_LIT if (x + y) % 3 else PRETZEL_BODY)
+    for x, y in ((4, 3), (10, 2), (7, 13), (2, 8)):
+        if (x, y) in dough:
+            pixels[x, y] = PRETZEL_SALT
     return image
 
 
@@ -746,6 +790,8 @@ def main():
     loaf = recolour(bread, (0x4A, 0x12, 0x1A), (0xC8, 0x5A, 0x3C))
     chunky(loaf, crumb(bread), NETHER_PIECES, seed=17, density=7)\
         .save(OUT / "nether_loaf.png")
+
+    pretzel().save(OUT / "pretzel.png")
 
     # Shelled and boiled: vanilla's egg, white all through.
     boiled_egg(art.get("egg")).save(OUT / "hardboiled_egg.png")
