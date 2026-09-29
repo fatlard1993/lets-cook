@@ -4,6 +4,10 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.2.2": [
+      "The smoker's fuel slot takes every offcut the firebox will burn.",
+      "Planks, stairs, slabs, gates and signs were refused at the screen while the firebox would have burned them."
+    ],
     "1.2.1": [
       "A smoker takes wooden blocks from other mods too, not only the shapes vanilla ships.",
       "Wood Floor's floors, Fence Posts' posts and Moredoor's doors all burn."

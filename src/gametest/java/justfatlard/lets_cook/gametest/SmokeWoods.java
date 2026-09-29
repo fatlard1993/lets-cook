@@ -108,7 +108,43 @@ public final class SmokeWoods implements FabricClientGameTest {
 					"stone", "iron_block", "wool", "dirt"}) {
 				if (burns(not)) throw new AssertionError(not + " was accepted as smoker fuel");
 			}
+
+			// And the screen's own slot, which is the door a player pushes on. It agreed with none
+			// of the above for a while: it took a log and refused every offcut.
+			for (String offcut : new String[] {"oak_planks", "oak_stairs", "oak_slab", "oak_fence_gate",
+					"oak_sign", "oak_log", "mangrove_planks"}) {
+				slotAgrees(client, offcut, true);
+			}
+			for (String no : new String[] {"coal", "charcoal", "spruce_log", "spruce_planks", "stone"}) {
+				slotAgrees(client, no, false);
+			}
 		});
+	}
+
+	/**
+	 * The smoker's own screen, asked the way a player asks it.
+	 *
+	 * <p>Every other check here calls SmokeWood, which is the answer and not the question. The
+	 * screen's fuel slot asks AbstractFurnaceMenu.isFuel instead, and that door once held a rule of
+	 * its own - logs only - and kept it after the rule everywhere else grew to take offcuts. Nothing
+	 * in this file could see it, because nothing in this file opened the screen.
+	 */
+	private static void slotAgrees(net.minecraft.client.Minecraft client, String path, boolean expected) {
+		var item = BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(path));
+		var menu = new net.minecraft.world.inventory.SmokerMenu(0, client.player.getInventory());
+		boolean answer;
+		try {
+			var isFuel = net.minecraft.world.inventory.AbstractFurnaceMenu.class
+				.getDeclaredMethod("isFuel", ItemStack.class);
+			isFuel.setAccessible(true);
+			answer = (Boolean) isFuel.invoke(menu, new ItemStack(item));
+		} catch (ReflectiveOperationException unreachable) {
+			throw new AssertionError("could not ask the smoker's fuel slot about " + path, unreachable);
+		}
+		if (answer != expected) {
+			throw new AssertionError("the smoker's fuel slot " + (answer ? "took " : "refused ")
+				+ path + ", against SmokeWood's answer");
+		}
 	}
 
 	private static boolean burns(String path) {
