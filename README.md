@@ -4,7 +4,6 @@ A Fabric mod that rounds out vanilla cooking: smoking as a craft of its own, che
 
 ## Screenshots
 
-![A cellar of barrels working in the dark, under one lantern](cellar.png)
 ![The seven drinks: beer, five wines and mead, each its own colour](drinks.png)
 
 ## What This Mod Does
