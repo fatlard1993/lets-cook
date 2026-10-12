@@ -2,12 +2,15 @@ package justfatlard.lets_cook;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Consumables;
@@ -78,6 +81,12 @@ public final class Snacks {
 				.saturationModifier(0.5F)
 				.alwaysEdible()
 				.build()));
+
+		// Vanilla's cookie is a snack too, so the same rule: a full stomach never stopped anyone
+		// having a cookie. Set on the server alone, which is enough: a client that thinks you are
+		// full still sends the use, and follows the server when it starts you eating.
+		DefaultItemComponentEvents.MODIFY.register(context -> context.modify(Items.COOKIE, components ->
+			components.set(DataComponents.FOOD, new FoodProperties(Foods.COOKIE.nutrition(), Foods.COOKIE.saturation(), true))));
 
 		// Drunk, not eaten - so the drinking animation, the drinking sound, and the bottle back.
 		// Always drinkable, because thirst is not hunger and a full stomach never stopped anyone
