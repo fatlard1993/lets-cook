@@ -612,41 +612,49 @@ def pie_face(crust, fill, seed, face):
 
 
 def pretzel():
-    """A pretzel: the belly loop, and the two arms crossed over the top of it.
+    """A pretzel: one rope, its middle the belly, its ends crossed in a twist and pressed back down.
 
-    Drawn as a rope along a path rather than as a shape with holes cut in it, which is the whole
-    difference. A disc with three holes reads as a paw print, and a ring with a bar across it
-    reads as - well, as Hemp Craft's rope item used to, which is why this one exists.
+    The ends fold back onto the belly rather than reaching up out of it; drawn reaching up, the
+    same rope reads as a ring with a bow tied on top. Folded back, it makes the two lobes on top
+    and the little triangle underneath that say pretzel before anything else does.
+
+    Drawn as two mirrored halves, one laid over the other, each shaded on its own so the half on
+    top keeps its edge where it crosses the one beneath.
     """
-    import math
+    def spline(points, steps=40):
+        padded = [points[0]] + points + [points[-1]]
+        path = []
+        for p0, p1, p2, p3 in zip(padded, padded[1:], padded[2:], padded[3:]):
+            for step in range(steps):
+                t = step / steps
+                path.append(tuple(
+                    0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d) * t * t
+                           + (3 * b - a - 3 * c + d) * t ** 3)
+                    for a, b, c, d in zip(p0, p1, p2, p3)))
+        return path + [points[-1]]
 
-    def ellipse(cx, cy, rx, ry, a0, a1, steps=140):
-        return [(round(cx + rx * math.cos(math.radians(a0 + (a1 - a0) * i / steps))),
-                 round(cy + ry * math.sin(math.radians(a0 + (a1 - a0) * i / steps))))
-                for i in range(steps + 1)]
+    def rope(points, radius=1.35):
+        return {(x, y) for cx, cy in spline(points) for x in range(16) for y in range(16)
+                if (x + 0.5 - cx) ** 2 + (y + 0.5 - cy) ** 2 <= radius * radius}
 
-    def segment(x0, y0, x1, y1, steps=24):
-        return [(round(x0 + (x1 - x0) * i / steps), round(y0 + (y1 - y0) * i / steps))
-                for i in range(steps + 1)]
-
-    dough = set()
-    for path in (ellipse(7.4, 9.5, 5.4, 4.1, -35, 215),      # the belly
-                 segment(3.6, 7.0, 10.0, 1.6),               # one arm, over
-                 segment(10.8, 7.0, 4.4, 1.6)):              # and the other, under
-        for x, y in path:
-            for dx in range(2):
-                for dy in range(2):
-                    if 0 <= x + dx < 16 and 0 <= y + dy < 16:
-                        dough.add((x + dx, y + dy))
+    # From the end pressed on the lower right, up through the twist, over the left lobe, and down
+    # round the belly to its middle.
+    left = [(11.4, 11.4), (8, 8.0), (6.6, 5.6), (5.4, 3.0), (3.4, 2.4),
+            (1.9, 4.4), (1.9, 8.0), (3.6, 11.6), (8, 13.2)]
+    right = [(16 - x, y) for x, y in left]
 
     image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     pixels = image.load()
-    for x, y in dough:
-        rim = any((x + dx, y + dy) not in dough for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-        pixels[x, y] = PRETZEL_CRUST if rim else (PRETZEL_LIT if (x + y) % 3 else PRETZEL_BODY)
-    for x, y in ((4, 3), (10, 2), (7, 13), (2, 8)):
-        if (x, y) in dough:
-            pixels[x, y] = PRETZEL_SALT
+    for half in (rope(right), rope(left)):
+        for x, y in half:
+            if (x + 1, y) not in half or (x, y + 1) not in half:
+                pixels[x, y] = PRETZEL_CRUST
+            elif (x - 1, y) not in half or (x, y - 1) not in half:
+                pixels[x, y] = PRETZEL_LIT
+            else:
+                pixels[x, y] = PRETZEL_BODY
+    for x, y in ((4, 2), (10, 3), (12, 9), (7, 13)):
+        pixels[x, y] = PRETZEL_SALT
     return image
 
 
