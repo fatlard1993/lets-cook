@@ -4,6 +4,9 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.4.1": [
+      "A mod menu icon of four of its own dishes."
+    ],
     "1.4.0": [
       "Cookies can be eaten when you're full, like the caramel apple: there's always room for a cookie.",
       "The pretzel looks like a pretzel: two lobes over a twist, where it used to be a ring with a bow on top."
