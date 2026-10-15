@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""Generate Let's Cook's mod menu icon: a wheel of cheese with a slice taken.
+"""Generate Let's Cook's mod menu icon: four of its own dishes, a quarter each.
 
-Vanilla has no cheese, so the colours come from the hay bale: the same straw
-yellows, the darkest for the rind and the holes, the lightest for the cut face
-where the slice came out. A whole wheel is a yellow circle; the missing wedge
-is what makes it food. Source pixels are read straight out of the vanilla
-Minecraft jar and scaled nearest neighbour, never smoothed.
+The mod is a whole kitchen, so one dish would undersell it: a pretzel, a bottle of berry
+wine, a sandwich and sushi, chosen because their outlines stay apart at listing size. The
+pies are left out, as in their tins they read as buckets. Each keeps its native sixteen
+pixels on a 32-pixel grid; shrunk to eight they turned to mud.
 
-Pure stdlib PNG reader and writer (zlib + struct) so it runs without Pillow, the
-same script generated art approach as the rest of the suite. Deterministic:
-re-running produces identical bytes.
+Pure stdlib PNG reader and writer (zlib + struct) so it runs without Pillow, the same script
+generated art approach as the rest of the suite. Deterministic: re-running produces identical
+bytes.
 
-Usage: python3 generate_icon.py [path/to/minecraft.jar]
+Usage: python3 generate_icon.py
 """
 
 import glob
@@ -20,7 +19,6 @@ import struct
 import sys
 import zipfile
 import zlib
-from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "src/main/resources/assets/lets-cook-justfatlard/icon.png")
@@ -217,54 +215,45 @@ def crop(pixels, left, top, width, height):
     return [row[left:left + width] for row in pixels[top:top + height]]
 
 
-def shade(px, factor):
-    """Darken (or brighten) a pixel, alpha untouched."""
-    return tuple(min(255, int(c * factor)) for c in px[:3]) + (px[3],)
 
-import math
-from collections import Counter
-
-CENTRE = (7.5, 7.5)
-RADIUS = 7.2
-WEDGE = (math.radians(-80), math.radians(-20))   # the slice, up and to the right
-HOLES = [(5, 7), (9, 10), (10, 5), (6, 11)]
+def here(path):
+    """A texture this mod ships, read from the repo rather than the jar."""
+    with open(os.path.join(HERE, path), "rb") as f:
+        return decode_png(f.read())
 
 
-def cheese_palette():
-    """Hay's straw tones, darkest first: rind, body, cut face."""
-    counts = Counter(px for row in vanilla("block/hay_block_side.png") for px in row if px[3])
-    tones = sorted((px for px, _ in counts.most_common(6)),
-                   key=lambda p: 0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2])
-    return tones[0], tones[len(tones) // 2], tones[-1]
+def sample(pixels, width, height):
+    """Nearest neighbour to any size, up or down. Pixel art is never smoothed."""
+    src_h, src_w = len(pixels), len(pixels[0])
+    return [[pixels[y * src_h // height][x * src_w // width] for x in range(width)]
+            for y in range(height)]
 
 
-def in_wedge(angle):
-    return WEDGE[0] <= angle <= WEDGE[1]
+def fill(colour, size=16):
+    return [[colour] * size for _ in range(size)]
+
+
+def put(sprite, x, y, colour):
+    if 0 <= y < len(sprite) and 0 <= x < len(sprite[0]):
+        sprite[y][x] = colour
+
+
+def rect(sprite, x0, y0, x1, y1, colour):
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            put(sprite, x, y, colour)
+
+
+GROUND = (70, 44, 30, 255)
+DISHES = ("pretzel", "berry_wine", "meat_sandwich", "sushi")
 
 
 def build_icon():
-    rind, body, face = cheese_palette()
-    sprite = blank()
-    for y in range(16):
-        for x in range(16):
-            dx, dy = x + 0.5 - CENTRE[0], y + 0.5 - CENTRE[1]
-            dist = math.hypot(dx, dy)
-            if dist > RADIUS:
-                continue
-            angle = math.atan2(dy, dx)
-            if in_wedge(angle):
-                continue
-            near_cut = (in_wedge(angle - 0.28) or in_wedge(angle + 0.28)) and dist > 1.5
-            if dist > RADIUS - 1.2:
-                sprite[y][x] = rind
-            elif near_cut:
-                sprite[y][x] = face
-            else:
-                sprite[y][x] = body
-    for x, y in HOLES:
-        if sprite[y][x] == body:
-            sprite[y][x] = rind
-    return scale(sprite, 8)
+    sprite = fill(GROUND, 32)
+    for i, dish in enumerate(DISHES):
+        art = here(f"src/main/resources/assets/lets-cook-justfatlard/textures/item/{dish}.png")
+        stamp(sprite, art, (i % 2) * 16, (i // 2) * 16)
+    return scale(sprite, 4)
 
 
 if __name__ == "__main__":
