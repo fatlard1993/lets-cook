@@ -74,7 +74,7 @@ Beef is the fatty one because its picture is: the marbling is right there on the
 
 **The squid are whitefish.** Squid, glow squid and nautilus give raw cod, which smokes into Smoked Whitefish. A nautilus is worth killing for the first time: its shell is a one-in-twenty drop and only to a player, so until now most of them were worth nothing at all.
 
-Looting adds up to one more per level, the way it does on a cow, and that goes for second cuts as well. Every drop here comes out cooked if the animal died on fire - and for the polar bear that goes for its fish too. Nothing an animal dropped before was taken away; the meat is added beside it. Chicken, pig, rabbit and hoglin are in the table for completeness and are entirely untouched.
+Looting adds up to one more per level, the way it does on a cow, and that goes for second cuts as well. Every drop here comes out cooked if the animal died on fire - and for the polar bear that goes for its fish too. Nothing an animal dropped before was taken away; the meat is added beside it. Chicken, pig, rabbit and hoglin drop what they always did, and are listed for completeness: pork is simply called white meat here.
 
 Wolves, cats and ocelots are in that table, tame ones included. If you keep companions, that is worth knowing before you swing at one.
 
