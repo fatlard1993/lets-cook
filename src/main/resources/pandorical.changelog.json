@@ -4,6 +4,10 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.5.0": [
+      "Food is eaten a bite at a time: everything you eat or drink goes down in three stages while you hold it to your mouth.",
+      "Bowls empty from the edges in, ice cream shrinks in its bowl, and bottles are uncorked and drain."
+    ],
     "1.4.1": [
       "A mod menu icon of four of its own dishes."
     ],

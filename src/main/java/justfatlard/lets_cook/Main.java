@@ -62,12 +62,16 @@ public class Main implements ModInitializer {
 
 		PandoricalApi.content().registerModAssets(MOD_ID);
 
-		// Written here rather than shipped, since which look they wear depends on Minedew Fishing.
-		for (String fish : java.util.List.of("smoked_cod", "smoked_salmon")) {
-			String definition = "{\n  \"model\": {\n    \"type\": \"minecraft:model\",\n    \"model\": \""
-				+ appearanceModel(fish) + "\"\n  }\n}\n";
-			PandoricalApi.content().registerAsset("assets/" + MOD_ID + "/items/" + fish + ".json",
-				definition.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+		// Written here rather than shipped, since it depends on Minedew Fishing. It replaces the
+		// shipped definition, eating stages and all: those are drawn from vanilla's whole fish, and a
+		// fillet that turned into a fish to be bitten would be worse than one that is not bitten.
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("minedew-fishing")) {
+			for (String fish : java.util.List.of("smoked_cod", "smoked_salmon")) {
+				String definition = "{\n  \"model\": {\n    \"type\": \"minecraft:model\",\n    \"model\": \""
+					+ appearanceModel(fish) + "\"\n  }\n}\n";
+				PandoricalApi.content().registerAsset("assets/" + MOD_ID + "/items/" + fish + ".json",
+					definition.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+			}
 		}
 
 		LOGGER.info("Let's Cook loaded - {} smoked foods, {} dishes, {} snacks, {} baked, "

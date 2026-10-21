@@ -28,8 +28,11 @@ from io import BytesIO
 
 from PIL import Image, ImageDraw
 
+from generate_models import SMOKED
+
 HERE = pathlib.Path(__file__).parent
 OUT = HERE / "src/main/resources/assets/lets-cook-justfatlard/textures/item"
+EATING = OUT / "eating"
 
 DEFAULT_JAR_GLOB = (
     ".gradle/caches/fabric-loom/minecraftMaven/net/minecraft/"
@@ -145,8 +148,12 @@ def outline(image, shade=0.55):
     return out
 
 
-def tinted_bottle(overlay, glass, colour, bubbles=0, seed=0):
-    """A drink, the way vanilla makes one: tinted liquid with the glass laid over it."""
+def tinted_bottle(overlay, glass, colour, bubbles=0, seed=0, level=1.0):
+    """A drink, the way vanilla makes one: tinted liquid with the glass laid over it.
+
+    Below a full level the liquid drains from the top down, and the glass handed in should be
+    the open bottle: nobody drinks through the cork.
+    """
     liquid = Image.new("RGBA", overlay.size, (0, 0, 0, 0))
     for x in range(overlay.width):
         for y in range(overlay.height):
@@ -164,7 +171,39 @@ def tinted_bottle(overlay, glass, colour, bubbles=0, seed=0):
             r, g, b, a = liquid.getpixel((x, y))
             liquid.putpixel((x, y), (min(255, r + 70), min(255, g + 70), min(255, b + 55), a))
 
+    # Bubbles go in before the level drops, so a draining beer keeps the bubbles it had rather
+    # than growing a fresh set in whatever is left.
+    if level < 1.0:
+        rows = sorted({y for x in range(16) for y in range(16) if liquid.getpixel((x, y))[3]})
+        surface = rows[len(rows) - max(1, round(len(rows) * level))]
+        for x in range(16):
+            for y in range(surface):
+                liquid.putpixel((x, y), (0, 0, 0, 0))
+
     return Image.alpha_composite(liquid, glass)
+
+
+def uncorked(bottle):
+    """The bottle with its cork pulled, so a drink being drunk is an open one.
+
+    Vanilla's empty bottle keeps its cork, so there is no open bottle in the jar to borrow. The
+    cork is the only warm thing on the glass: where it pokes out above the neck it simply goes,
+    the first row of it held between glass becomes the lip, and the rest is the open neck.
+    """
+    out = bottle.copy()
+    px = bottle.load()
+    warm = lambda x, y: px[x, y][3] and px[x, y][0] > px[x, y][2]
+    lip = None
+    for y in range(16):
+        cork = [x for x in range(16) if warm(x, y)]
+        if not cork:
+            continue
+        held = px[min(cork) - 1, y][3] and px[max(cork) + 1, y][3]
+        if held and lip is None:
+            lip = y
+        for x in cork:
+            out.putpixel((x, y), px[min(cork) - 1, y] if y == lip else (0, 0, 0, 0))
+    return out
 
 
 def recolour(image, dark, light, keep=lambda p: True):
@@ -198,7 +237,7 @@ BOWLS = {
 }
 
 
-def scoop_of(bowl, mask, dark, light, speckles=()):
+def scoop_of(bowl, mask, dark, light, speckles=(), radius=4.2):
     """A ball of ice cream sitting up out of the bowl, not a pool lying in it.
 
     Ice cream is the one dish here that is not a liquid, and drawing it as one was the tell: it
@@ -214,8 +253,9 @@ def scoop_of(bowl, mask, dark, light, speckles=()):
 
     out = bowl.copy()
     colours = ramp(dark, light)
-    radius = 4.2
-    cy = surface - 0.6
+    # A smaller scoop is one that has been eaten down, so it sinks to keep sitting in the bowl
+    # rather than hovering where the top of the full one was.
+    cy = surface - 0.6 + (4.2 - radius) * 0.6
 
     for x in range(16):
         for y in range(16):
@@ -235,7 +275,7 @@ def scoop_of(bowl, mask, dark, light, speckles=()):
         if not speckles:
             break
         px, py = round(centre_x + sx), round(cy + sy)
-        if 0 <= px < 16 and 0 <= py < 16:
+        if 0 <= px < 16 and 0 <= py < 16 and (sx * sx + sy * sy) ** 0.5 < radius - 0.5:
             out.putpixel((px, py), speckles[i % len(speckles)] + (255,))
     return out
 
@@ -726,6 +766,100 @@ SCOOPS = {
 }
 
 
+# How much of a thing is gone at each stage of eating it. Three, because the client swaps them at
+# three points in the bite (see generate_models.py), and ending well short of all of it because
+# the item vanishes on the last tick anyway - a stage that is nearly nothing is never seen whole.
+BITES = (0.25, 0.45, 0.65)
+
+# What is bitten besides the smoked meats, and which of its pixels are not food. A held item points
+# its top right corner at the mouth, so every one of these goes corner first: a square thing bitten
+# from one side is left as a tall sliver, which reads as a slice rather than a sandwich, and the
+# apple bitten from the top down was left as a cup on a stem.
+CARAMEL_STICK = ((0x5A, 0x40, 0x22), (0x8A, 0x66, 0x3A))
+BITTEN = {
+    "nether_loaf": None,
+    "meat_sandwich": None,
+    "sushi": None,
+    "pretzel": None,
+    "hardboiled_egg": None,
+    # Never the stick: you are holding it.
+    "caramel_apple": lambda p: p[:3] in CARAMEL_STICK,
+}
+
+
+def bitten(image, eaten, keep=None, seed=0):
+    """A sprite with bites out of its top right corner, the end nearest the mouth.
+
+    A straight cut reads as a knife, so the line is scalloped with tooth marks. The new edge is
+    darkened the way outline() darkens a sprite's rim; without it the bite reads as a hole in the
+    picture rather than a hole in the food. Anything the bite leaves cut off from the rest falls
+    away, because a lone pixel floating beside a sandwich is not a crumb, it is noise.
+    """
+    px = image.load()
+    solid = {(x, y) for x in range(16) for y in range(16) if px[x, y][3]}
+    held = {(x, y) for x, y in solid if keep and keep(px[x, y])}
+    food = solid - held
+
+    along = lambda p: p[0] - p[1]
+    near, far = max(map(along, food)), min(map(along, food))
+    cut = near - eaten * (near - far)
+
+    rng = random.Random(seed)
+    edge = sorted(p for p in food if abs(along(p) - cut) < 1.0)
+    teeth = rng.sample(edge, max(1, len(edge) // 4)) if edge else []
+    gone = {(x, y) for x, y in food
+            if along((x, y)) > cut or any((x - a) ** 2 + (y - b) ** 2 <= 2.2 for a, b in teeth)}
+
+    unvisited, pieces = solid - gone, []
+    while unvisited:
+        piece, todo = set(), [min(unvisited)]
+        unvisited.discard(todo[0])
+        while todo:
+            x, y = todo.pop()
+            piece.add((x, y))
+            for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if n in unvisited:
+                    unvisited.discard(n)
+                    todo.append(n)
+        pieces.append(piece)
+    body = max(pieces, key=len) | held
+    gone = solid - body
+
+    out = image.copy()
+    for p in gone:
+        out.putpixel(p, (0, 0, 0, 0))
+    for x, y in body - held:
+        if any((x + dx, y + dy) in gone for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+            r, g, b, a = px[x, y]
+            out.putpixel((x, y), (round(r * 0.55), round(g * 0.55), round(b * 0.55), a))
+    return out
+
+
+def receded(dish, bowl, mask, left):
+    """A bowl with only the middle of its contents still in it.
+
+    Eaten from the edges in, the way a spoon goes round a bowl: the contents keep their centre and
+    the bowl's own empty inside comes back around them, with the new rim of the food in shadow so
+    it still sits down in the bowl.
+    """
+    points = [(x, y) for x in range(16) for y in range(16) if mask.getpixel((x, y))]
+    cx = sum(x for x, _ in points) / len(points)
+    cy = sum(y for _, y in points) / len(points)
+    rx = (max(x for x, _ in points) - min(x for x, _ in points)) / 2 + 0.5
+    ry = (max(y for _, y in points) - min(y for _, y in points)) / 2 + 0.5
+
+    kept = {(x, y) for x, y in points
+            if ((x - cx) / (rx * left)) ** 2 + ((y - cy) / max(ry * left, 0.6)) ** 2 <= 1.0}
+    out = dish.copy()
+    for p in points:
+        if p not in kept:
+            out.putpixel(p, bowl.getpixel(p))
+        elif any((p[0] + dx, p[1] + dy) not in kept for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+            r, g, b, a = dish.getpixel(p)
+            out.putpixel(p, (round(r * 0.72), round(g * 0.72), round(b * 0.72), a))
+    return out
+
+
 def prune(directory, keep):
     """Delete textures this run no longer produces.
 
@@ -762,7 +896,8 @@ def main():
 
     # A drink, made the way vanilla makes drinks.
     overlay, glass = art.get("potion_overlay"), art.get("potion")
-    tinted_bottle(overlay, glass, (0x6C, 0xC2, 0x4A)).save(OUT / "cactus_juice.png")
+    drinks = {"cactus_juice": dict(colour=(0x6C, 0xC2, 0x4A))}
+    tinted_bottle(overlay, glass, **drinks["cactus_juice"]).save(OUT / "cactus_juice.png")
 
     # Cheese is only ever carried in a bucket - it is made in one and dumped out of one - so the
     # item is a pail of cheese rather than a wedge. The wedge belongs to the block it becomes.
@@ -790,7 +925,7 @@ def main():
     }).save(OUT / "sushi.png")
 
     caramel_apple(art.get("apple"), (0x6E, 0x38, 0x0C), (0xE8, 0xA2, 0x3E),
-                  (0x5A, 0x40, 0x22), (0x8A, 0x66, 0x3A)).save(OUT / "caramel_apple.png")
+                  *CARAMEL_STICK).save(OUT / "caramel_apple.png")
 
     # The chili cooked down: the bowl burns away and what is left is a loaf, so it is bread's
     # shape in the nether's colours rather than anything of its own.
@@ -820,6 +955,34 @@ def main():
         tinted_bottle(overlay, glass, done, bubbles=7 if drink == "beer" else 0, seed=4) \
             .save(OUT / f"{drink}.png")
         tinted_bottle(overlay, glass, raw).save(OUT / f"{drink}_starter.png")
+        drinks[drink] = dict(colour=done, bubbles=7 if drink == "beer" else 0, seed=4)
+
+    # Every stage of every edible thing, for the client to swap through while it is eaten. Kept in
+    # a folder of their own: generate_models.py gives every sprite at the top level an item.
+    EATING.mkdir(exist_ok=True)
+    stages = set()
+
+    def stage(name, n, image):
+        image.save(EATING / f"{name}_{n}.png")
+        stages.add(f"{name}_{n}.png")
+
+    for n, eaten in enumerate(BITES):
+        left = 1 - eaten
+        for name in BOWLS:
+            stage(name, n, receded(Image.open(OUT / f"{name}.png").convert("RGBA"),
+                                   bowl, mask, left))
+        for name, (dark, light, speckles) in SCOOPS.items():
+            stage(name, n, scoop_of(bowl, mask, dark, light, speckles, radius=4.2 * left ** 0.5))
+
+        for name, drink in drinks.items():
+            stage(name, n, tinted_bottle(overlay, uncorked(glass), level=left, **drink))
+
+        for name, appearance in SMOKED.items():
+            stage(name, n, bitten(art.get(appearance), eaten, seed=n))
+        for name, keep in BITTEN.items():
+            stage(name, n, bitten(Image.open(OUT / f"{name}.png").convert("RGBA"),
+                                  eaten, keep, seed=n))
+    eating_gone = prune(EATING, stages)
 
     blocks = HERE / "src/main/resources/assets/lets-cook-justfatlard/textures/block"
     blocks.mkdir(parents=True, exist_ok=True)
@@ -872,6 +1035,8 @@ def main():
     gone = prune(blocks, faces)
 
     print(f"  {len(BOWLS)} bowls, 1 bottle, 2 cheeses, 1 egg -> {OUT.relative_to(HERE)}")
+    print(f"  {len(stages)} eating stages -> {EATING.relative_to(HERE)}"
+          + (f" ({eating_gone} stale removed)" if eating_gone else ""))
     print(f"  {len(list(blocks.glob('*.png')))} block faces -> {blocks.relative_to(HERE)}"
           + (f" ({gone} stale removed)" if gone else ""))
 

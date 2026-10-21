@@ -182,6 +182,12 @@ Food you carry, that is not meat and does not come in a bowl.
 - **Cookie**: vanilla's, under the same rule: it can be eaten when you are full.
 - **Cactus Juice**: crouch and right-click a cactus with an empty glass bottle. A cactus is a plant full of water standing in the one biome with none. It must have grown a little first, and tapping it sets its growth back to nothing, which is a price you can see in your farm rather than a hidden timer. Always drinkable, bottle back, stacks to sixteen.
 
+## Eaten A Bite At A Time
+
+Everything here that you eat or drink goes down in stages while you hold it to your mouth, in the hand, in the hotbar and in other players' hands. Food is bitten from the end you hold to your mouth, a bowl empties from the edges in, and a bottle is uncorked and drains. The smoked meats get bitten too, though they wear vanilla's cooked look.
+
+It is all client-side model work that Pandorical delivers, so nobody installs anything extra. Where Minedew Fishing turns cod and salmon into fillets, the smoked fillets are not bitten: the bites are drawn from the whole fish.
+
 ## Every Recipe
 
 The whole menu in one place. Everything in the grid is shapeless, so the ingredients go anywhere in it. Where a recipe says "any", it means a tag, and another mod's item in that tag works too.

@@ -214,10 +214,40 @@ def prune(*directories):
     return gone
 
 
+# Ticks into eating at which each stage generate_textures.py drew takes over. Every food and drink
+# here is eaten in vanilla's 32 ticks (Consumables.defaultFood and defaultDrink), and the last stage
+# comes a few ticks before the end because the item is gone on the final one.
+STAGE_TICKS = (10, 20, 27)
+
+
 def definition(name, model):
-    """The item's entry point: which model to draw it with."""
-    write(ASSETS / "items" / f"{name}.json",
-          {"model": {"type": "minecraft:model", "model": model}})
+    """The item's entry point: which model to draw it with, and while it is being eaten, which bite.
+
+    Chosen on the client from how long the holder has been using this very stack, so the bites show
+    in the hand, in the hotbar and on anyone else eating - and no part of it is on the server.
+    """
+    whole = {"type": "minecraft:model", "model": model}
+    stages = sorted((ASSETS / "textures/item/eating").glob(f"{name}_[0-9].png"))
+    if not stages:
+        write(ASSETS / "items" / f"{name}.json", {"model": whole})
+        return
+
+    entries = []
+    for ticks, sprite in zip(STAGE_TICKS, stages):
+        write(ASSETS / "models/item/eating" / f"{sprite.stem}.json", {
+            "parent": "minecraft:item/generated",
+            "textures": {"layer0": f"{NAMESPACE}:item/eating/{sprite.stem}"},
+        })
+        entries.append({"threshold": ticks, "model": {
+            "type": "minecraft:model", "model": f"{NAMESPACE}:item/eating/{sprite.stem}"}})
+
+    write(ASSETS / "items" / f"{name}.json", {"model": {
+        "type": "minecraft:condition",
+        "property": "minecraft:using_item",
+        "on_true": {"type": "minecraft:range_dispatch", "property": "minecraft:use_duration",
+                    "entries": entries, "fallback": whole},
+        "on_false": whole,
+    }})
 
 
 def main():

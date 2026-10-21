@@ -1,6 +1,41 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "lets-cook-justfatlard:item/pretzel"
+    "type": "minecraft:condition",
+    "property": "minecraft:using_item",
+    "on_true": {
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:use_duration",
+      "entries": [
+        {
+          "threshold": 10,
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/pretzel_0"
+          }
+        },
+        {
+          "threshold": 20,
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/pretzel_1"
+          }
+        },
+        {
+          "threshold": 27,
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/pretzel_2"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "lets-cook-justfatlard:item/pretzel"
+      }
+    },
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "lets-cook-justfatlard:item/pretzel"
+    }
   }
 }

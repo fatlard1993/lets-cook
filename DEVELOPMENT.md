@@ -16,3 +16,12 @@ textured item a model and points the smoked foods at the vanilla look they borro
 the skin; pies are built from boxes of their own, a rolled crust standing proud round the edge and
 five vents cut through the lid to the filling underneath. All three are deterministic; re-run them after a Minecraft
 version bump.
+
+Everything edible also gets three eating stages in `textures/item/eating/`: bitten from the top
+right corner, eaten from the edges of the bowl in, or drained from an uncorked bottle. Run
+`generate_textures.py` before `generate_models.py`, which wraps an item's definition in a
+`using_item` / `use_duration` switch only when it finds stages for it. The tick thresholds in
+`generate_models.py` assume vanilla's 32-tick eat; a food given a different consume time needs its
+own. The `EatingStages` client gametest fails if anything edible lacks the switch or anything
+inedible has it, and photographs four foods being eaten into
+`build/run/clientGameTest/screenshots/eating_*`.
