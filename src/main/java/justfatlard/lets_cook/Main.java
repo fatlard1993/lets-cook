@@ -32,6 +32,7 @@ public class Main implements ModInitializer {
 		Snacks.register();
 		Pies.register();
 		Drinks.register();
+		RockCandy.register();
 
 		// Each smoked food wears its cooked counterpart's look: it is the same meat, kept
 		// differently, and drawing it as something else would be a lie about what it is.
@@ -56,6 +57,8 @@ public class Main implements ModInitializer {
 
 		Drinks.items().forEach((name, item) ->
 			share(name, Drinks.stackOf(name), MOD_ID + ":item/" + name));
+		share("rock_candy_starter", 16, MOD_ID + ":item/rock_candy_starter");
+		share("rock_candy", 64, MOD_ID + ":item/rock_candy");
 		Pies.blocks().forEach(Main::wheel);
 
 		UseBlockCallback.EVENT.register(CactusTap::onUseBlock);

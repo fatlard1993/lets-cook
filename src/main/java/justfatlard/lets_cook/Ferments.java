@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -47,9 +48,11 @@ public final class Ferments {
 	 * @param base   the name to wear the stage on, chosen per ferment: a working wine already
 	 *               reads as the wine it is becoming, while milk in a barrel is still milk
 	 * @param done   what it sounds like when it finishes
+	 * @param leaves the empty container it comes out of, handed back beside it, or null when what it
+	 *               becomes is still in the container it went in
 	 */
 	private record Ferment(Item result, int ticks, String stage, Component base, SoundEvent done,
-			Finisher finisher) {}
+			Finisher finisher, @Nullable Item leaves) {}
 
 	/**
 	 * What a food does with the tier it earned.
@@ -67,7 +70,12 @@ public final class Ferments {
 
 	public static void add(Item input, Item result, int ticks, String stage, Component base,
 			SoundEvent done, Finisher finisher) {
-		BY_INPUT.put(input, new Ferment(result, ticks, stage, base, done, finisher));
+		add(input, result, ticks, stage, base, done, finisher, null);
+	}
+
+	public static void add(Item input, Item result, int ticks, String stage, Component base,
+			SoundEvent done, Finisher finisher, @Nullable Item leaves) {
+		BY_INPUT.put(input, new Ferment(result, ticks, stage, base, done, finisher, leaves));
 	}
 
 	public static int count() { return BY_INPUT.size(); }
@@ -134,6 +142,9 @@ public final class Ferments {
 			if (tier >= Vintage.BEST) Awards.aged(opener);
 
 			items.set(slot, made);
+			if (ferment.leaves() != null) {
+				handBack(level, pos, items, new ItemStack(ferment.leaves(), made.getCount()));
+			}
 			finished = ferment.done();
 		}
 
@@ -143,6 +154,25 @@ public final class Ferments {
 			level.playSound(null, pos, finished, SoundSource.BLOCKS, 0.6F, 0.9F);
 		}
 		return finished != null;
+	}
+
+	/**
+	 * Puts an emptied container back in the barrel: onto a stack of the same with room, then into an
+	 * empty slot, and whatever still has nowhere to go out on top of the barrel rather than lost.
+	 */
+	private static void handBack(Level level, BlockPos pos, List<ItemStack> items, ItemStack empties) {
+		for (ItemStack there : items) {
+			if (empties.isEmpty()) return;
+			if (ItemStack.isSameItemSameComponents(there, empties)) {
+				there.grow(empties.split(there.getMaxStackSize() - there.getCount()).getCount());
+			}
+		}
+		for (int slot = 0; slot < items.size() && !empties.isEmpty(); slot++) {
+			if (items.get(slot).isEmpty()) items.set(slot, empties.split(empties.getMaxStackSize()));
+		}
+		if (!empties.isEmpty()) {
+			Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, empties);
+		}
 	}
 
 	/**

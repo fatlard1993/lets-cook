@@ -144,9 +144,15 @@ A starter is not a drink and does not pretend to be. It has no food value at all
 
 **A wine, mead or vodka left three times its minimum comes out Aged**, and its effect lasts twice as long. The same drink, and what you waited for is having to drink fewer of them.
 
+## Rock Candy
+
+**A stick stood in sugared water grows crystal.** A water bottle, two sugar and a stick make a Rock Candy starter: the stick goes in where the cork would be. Leave it in a cellar barrel for a day and a half and the barrel says `(Crystallising)` while the sugar comes out of the water onto the stick.
+
+What comes out has come out of the glass: a crust of iridescent crystal on the stick that shimmers like something enchanted, with the empty bottle left beside it in the barrel (or on top of the barrel, if the barrel is full). It is always edible on a full stomach, stacks to sixty-four like the caramel apple, and grants Haste for 45 seconds, because it is pure sugar. Left three times its minimum it comes out Aged, and the Haste lasts twice as long.
+
 ## How A Barrel Works
 
-One rule for cheese, beer, wine and mead, so they are one mechanic with different tables rather than three that drift.
+One rule for cheese, beer, wine, mead and rock candy, so they are one mechanic with different tables rather than three that drift.
 
 **Underground and dark.** Sky light must be zero and block light seven or less. Both are read in the room beside the barrel, the brightest of its six sides, not at the barrel itself: the light inside a solid block is always nought, so reading it there would make a barrel in a sunny field a cellar. Sky light rather than the combined brightness, because the combined figure falls at dusk: a barrel in a field would qualify every night and stop at dawn, and the rule would look random to anyone who found it by accident.
 
@@ -223,6 +229,7 @@ The whole menu in one place. Everything in the grid is shapeless, so the ingredi
 | Chorus Wine Starter | water bottle, sugar, chorus fruit |
 | Mead Starter (makes two) | two water bottles, honey bottle |
 | Beetroot Vodka Starter | water bottle, sugar, beetroot |
+| Rock Candy Starter | water bottle, two sugar, stick |
 
 "Any cooked or smoked meat" is fatty red meat, lean red meat, white meat, poultry or rabbit, cooked or smoked - remembering that the smoked ones are Smoked Small Game rather than Smoked Rabbit. "Any cooked or smoked fish" is cooked cod or salmon, or Smoked Whitefish or Smoked Oily Fish.
 
@@ -249,8 +256,9 @@ Remember the smoker only burns wood. The pies and the loaf come out of a smoker 
 | Beer | beer starter | half a day |
 | Apple, Berry, Glow Berry, Melon and Chorus Wine, and Mead | the matching starter | a day and a half |
 | Beetroot Vodka | beetroot vodka starter | three days |
+| Rock Candy | rock candy starter | a day and a half |
 
-Left three times as long, cheese comes out Aged and a wine or mead comes out a vintage.
+Left three times as long, cheese comes out Aged and a wine, mead or rock candy comes out a vintage.
 
 **With no station at all**
 

@@ -49,6 +49,7 @@
 	"stage.lets-cook-justfatlard.fermenting": "Fermenting",
 	"stage.lets-cook-justfatlard.distilling": "Distilling",
 	"stage.lets-cook-justfatlard.ageing": "Ageing",
+	"stage.lets-cook-justfatlard.crystallising": "Crystallising",
 	"item.lets-cook-justfatlard.beer": "Beer",
 	"item.lets-cook-justfatlard.apple_wine": "Apple Wine",
 	"item.lets-cook-justfatlard.berry_wine": "Berry Wine",
@@ -57,6 +58,7 @@
 	"item.lets-cook-justfatlard.chorus_wine": "Chorus Wine",
 	"item.lets-cook-justfatlard.mead": "Mead",
 	"item.lets-cook-justfatlard.beetroot_vodka": "Beetroot Vodka",
+	"item.lets-cook-justfatlard.rock_candy": "Rock Candy",
 	"label.lets-cook-justfatlard.suffixed": "%s (%s)",
 	"vintage.lets-cook-justfatlard.aged": "Aged",
 	"item.lets-cook-justfatlard.pretzel": "Pretzel"

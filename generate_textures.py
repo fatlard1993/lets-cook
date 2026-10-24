@@ -725,6 +725,78 @@ def caramel_apple(apple, dark, light, stick_dark, stick_light):
     return image
 
 
+# Water with sugar run through it: water's blue, gone pale and a little cloudy, the way every
+# starter here reads as the one that is not ready.
+SYRUP = (0xB4, 0xC8, 0xE8)
+
+
+def rock_candy_starter(overlay, glass, stick):
+    """A stick stood in a bottle of sugared water, with nothing on it yet.
+
+    The stick comes up through the neck where the cork would be: a bottle with something growing
+    in it is never stoppered.
+    """
+    image = tinted_bottle(overlay, Image.new("RGBA", (16, 16)), SYRUP)
+    draw = ImageDraw.Draw(image)
+    draw.line([(8, 1), (8, 12)], fill=stick[0])
+    draw.point((8, 1), fill=stick[1])
+    return Image.alpha_composite(image, glass)
+
+
+# Sugar crystal is clear, so it is drawn in glass: vanilla's glass bottle gives the rim, the face
+# and the lit edge. Each chunk catches a slightly different tint of it, the colours on a soap film,
+# but never more than a near neighbour of glass blue, or clear crystal turns into coloured sweets.
+CANDY_TINTS = (
+    ((0x5D, 0x8F, 0xC2), (0xB3, 0xCF, 0xEC), (0xD4, 0xE5, 0xF7)),  # the glass itself
+    ((0x7A, 0x80, 0xC8), (0xC4, 0xC4, 0xF0), (0xE2, 0xE0, 0xFA)),  # lavender
+    ((0x58, 0xA0, 0xB6), (0xB2, 0xDE, 0xE6), (0xD6, 0xF0, 0xF4)),  # aqua
+    ((0xA8, 0x82, 0xB0), (0xE2, 0xCC, 0xE8), (0xF4, 0xE8, 0xF6)),  # rose
+)
+
+
+def rock_candy(stick, eaten=0.0, seed=0):
+    """What the bottle grew: chunks of sugar crystal up the stick, pulled out of the glass.
+
+    Vanilla's stick, held the way every stick in the game is, with crystal grown over its far end
+    in cubes of three and four. A crystal's face lets most of the light through, so the stick shows
+    behind it; its lit edge lets less through, its shadowed edge less again, and the corner nearest
+    the light is a glint.
+
+    Eaten, it is the crystal that goes and the stick that stays, all of it: the bites are taken out
+    of the crystal alone and laid back over a whole stick.
+    """
+    rng = random.Random(4)
+    crystal = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for n in range(9):
+        # Spread along the stick's upper two thirds, nudged off it either side.
+        along = 0.3 + 0.7 * n / 8
+        nudge = rng.uniform(-1.4, 1.4)
+        size = rng.choice((3, 4))
+        x0 = round(2 + 11 * along + nudge - size / 2)
+        y0 = round(13 - 11 * along + nudge - size / 2)
+        rim, face, lit = rng.choice(CANDY_TINTS)
+
+        chunk = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        px = chunk.load()
+        for dx in range(size):
+            for dy in range(size):
+                x, y = x0 + dx, y0 + dy
+                if not (0 <= x < 16 and 0 <= y < 16):
+                    continue
+                if (dx, dy) == (0, 0):
+                    px[x, y] = (255, 255, 255, 255)
+                elif dx == size - 1 or dy == size - 1:
+                    px[x, y] = rim + (230,)
+                elif dx == 0 or dy == 0:
+                    px[x, y] = lit + (170,)
+                else:
+                    px[x, y] = face + (60,)
+        crystal = Image.alpha_composite(crystal, chunk)
+    if eaten:
+        crystal = bitten(crystal, eaten, seed=seed)
+    return Image.alpha_composite(stick, crystal)
+
+
 def boiled_egg(egg):
     """An egg shelled and boiled: the same egg, gone white all through.
 
@@ -957,6 +1029,11 @@ def main():
         tinted_bottle(overlay, glass, raw).save(OUT / f"{drink}_starter.png")
         drinks[drink] = dict(colour=done, bubbles=7 if drink == "beer" else 0, seed=4)
 
+    # Rock candy grows in a bottle with a stick where its cork would be, so the starter is drawn
+    # open; what the barrel hands back has come out of the glass.
+    rock_candy_starter(overlay, uncorked(glass), CARAMEL_STICK).save(OUT / "rock_candy_starter.png")
+    rock_candy(art.get("stick")).save(OUT / "rock_candy.png")
+
     # Every stage of every edible thing, for the client to swap through while it is eaten. Kept in
     # a folder of their own: generate_models.py gives every sprite at the top level an item.
     EATING.mkdir(exist_ok=True)
@@ -976,6 +1053,8 @@ def main():
 
         for name, drink in drinks.items():
             stage(name, n, tinted_bottle(overlay, uncorked(glass), level=left, **drink))
+
+        stage("rock_candy", n, rock_candy(art.get("stick"), eaten, seed=n))
 
         for name, appearance in SMOKED.items():
             stage(name, n, bitten(art.get(appearance), eaten, seed=n))
