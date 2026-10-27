@@ -4,6 +4,11 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.6.0": [
+      "Rock candy: a water bottle, two sugar and a stick make a starter, and a day and a half in a cellar barrel grows crystal on the stick.",
+      "The empty bottle comes back to you in the barrel, or on top of it if the barrel is full.",
+      "Rock candy is edible on a full stomach and gives Haste. Aged rock candy gives it for twice as long."
+    ],
     "1.5.0": [
       "Food is eaten a bite at a time: everything you eat or drink goes down in three stages while you hold it to your mouth.",
       "Bowls empty from the edges in, ice cream shrinks in its bowl, and bottles are uncorked and drain."
