@@ -4,6 +4,9 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.6.1": [
+      "The changelog now tells of 1.6.0's rock candy. Nothing in play changes."
+    ],
     "1.6.0": [
       "Rock candy: a water bottle, two sugar and a stick make a starter, and a day and a half in a cellar barrel grows crystal on the stick.",
       "The empty bottle comes back to you in the barrel, or on top of it if the barrel is full.",
