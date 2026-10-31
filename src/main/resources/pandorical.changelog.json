@@ -4,6 +4,9 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.6.2": [
+      "Sushi can be rolled from a tropical fish too."
+    ],
     "1.6.1": [
       "The changelog now tells of 1.6.0's rock candy. Nothing in play changes."
     ],
