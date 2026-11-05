@@ -28,6 +28,10 @@
     "java": ">=25",
     "pandorical": ">=15.0.0"
   },
+  "suggests": {
+    "block-tip": "*",
+    "village-quests-justfatlard": "*"
+  },
   "custom": {
     "modmenu": {
       "links": {
