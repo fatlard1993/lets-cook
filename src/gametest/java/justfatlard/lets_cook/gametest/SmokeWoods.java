@@ -3,6 +3,7 @@ package justfatlard.lets_cook.gametest;
 import justfatlard.lets_cook.SmokeWood;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -109,16 +110,23 @@ public final class SmokeWoods implements FabricClientGameTest {
 				if (burns(not)) throw new AssertionError(not + " was accepted as smoker fuel");
 			}
 
-			// And the screen's own slot, which is the door a player pushes on. It agreed with none
-			// of the above for a while: it took a log and refused every offcut.
-			for (String offcut : new String[] {"oak_planks", "oak_stairs", "oak_slab", "oak_fence_gate",
-					"oak_sign", "oak_log", "mangrove_planks"}) {
-				slotAgrees(client, offcut, true);
-			}
-			for (String no : new String[] {"coal", "charcoal", "spruce_log", "spruce_planks", "stone"}) {
-				slotAgrees(client, no, false);
-			}
 		});
+
+		// And the screen's own slot, which is the door a player pushes on. It agreed with none of
+		// the above for a while: it took a log and refused every offcut. A menu is built from a
+		// player's inventory, so this part needs a world with a player in it.
+		try (TestSingleplayerContext world = context.worldBuilder().create()) {
+			world.getConnection().waitForChunksRender();
+			context.runOnClient(client -> {
+				for (String offcut : new String[] {"oak_planks", "oak_stairs", "oak_slab", "oak_fence_gate",
+						"oak_sign", "oak_log", "mangrove_planks"}) {
+					slotAgrees(client, offcut, true);
+				}
+				for (String no : new String[] {"coal", "charcoal", "spruce_log", "spruce_planks", "stone"}) {
+					slotAgrees(client, no, false);
+				}
+			});
+		}
 	}
 
 	/**
