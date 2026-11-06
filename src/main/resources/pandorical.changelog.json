@@ -4,6 +4,11 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.6.3": [
+      "Its smoker test checks the fuel slot inside a world, as the screen needs, so the suite passes again; nothing in play changes.",
+      "Names Block Tip and Village Quests as optional companions, so launchers and download pages know they go together.",
+      "Its tests draw a small window unless taking pictures, which runs them faster; nothing in play changes."
+    ],
     "1.6.2": [
       "Sushi can be rolled from a tropical fish too."
     ],
