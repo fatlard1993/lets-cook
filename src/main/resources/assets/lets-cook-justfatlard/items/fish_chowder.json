@@ -34,8 +34,36 @@
       }
     },
     "on_false": {
-      "type": "minecraft:model",
-      "model": "lets-cook-justfatlard:item/fish_chowder"
+      "type": "minecraft:select",
+      "property": "minecraft:custom_model_data",
+      "index": 0,
+      "cases": [
+        {
+          "when": "bites_1",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/fish_chowder_0"
+          }
+        },
+        {
+          "when": "bites_2",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/fish_chowder_1"
+          }
+        },
+        {
+          "when": "bites_3",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/fish_chowder_2"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "lets-cook-justfatlard:item/fish_chowder"
+      }
     }
   }
 }

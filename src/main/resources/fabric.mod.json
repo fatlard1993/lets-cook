@@ -30,7 +30,8 @@
   },
   "suggests": {
     "block-tip": "*",
-    "village-quests-justfatlard": "*"
+    "village-quests-justfatlard": "*",
+    "knick-knacks-justfatlard": "*"
   },
   "custom": {
     "modmenu": {

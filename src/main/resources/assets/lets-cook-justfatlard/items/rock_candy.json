@@ -34,8 +34,36 @@
       }
     },
     "on_false": {
-      "type": "minecraft:model",
-      "model": "lets-cook-justfatlard:item/rock_candy"
+      "type": "minecraft:select",
+      "property": "minecraft:custom_model_data",
+      "index": 0,
+      "cases": [
+        {
+          "when": "bites_1",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/rock_candy_0"
+          }
+        },
+        {
+          "when": "bites_2",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/rock_candy_1"
+          }
+        },
+        {
+          "when": "bites_3",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/rock_candy_2"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "lets-cook-justfatlard:item/rock_candy"
+      }
     }
   }
 }

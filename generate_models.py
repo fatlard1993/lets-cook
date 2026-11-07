@@ -225,6 +225,11 @@ def definition(name, model):
 
     Chosen on the client from how long the holder has been using this very stack, so the bites show
     in the hand, in the hotbar and on anyone else eating - and no part of it is on the server.
+
+    A stack nobody is holding has no use duration, so one at rest can name its bites instead: a
+    custom_model_data string of bites_1, bites_2 or bites_3 draws that many bites taken. That is
+    how Knick Knacks shows a loaf half eaten on a table; it finds the stages by these models'
+    paths, models/item/eating/<name>_<n>.json.
     """
     whole = {"type": "minecraft:model", "model": model}
     stages = sorted((ASSETS / "textures/item/eating").glob(f"{name}_[0-9].png"))
@@ -246,7 +251,10 @@ def definition(name, model):
         "property": "minecraft:using_item",
         "on_true": {"type": "minecraft:range_dispatch", "property": "minecraft:use_duration",
                     "entries": entries, "fallback": whole},
-        "on_false": whole,
+        "on_false": {"type": "minecraft:select", "property": "minecraft:custom_model_data", "index": 0,
+                     "cases": [{"when": f"bites_{n}", "model": entry["model"]}
+                               for n, entry in enumerate(entries, start=1)],
+                     "fallback": whole},
     }})
 
 

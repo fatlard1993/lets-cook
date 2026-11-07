@@ -34,8 +34,36 @@
       }
     },
     "on_false": {
-      "type": "minecraft:model",
-      "model": "lets-cook-justfatlard:item/beer"
+      "type": "minecraft:select",
+      "property": "minecraft:custom_model_data",
+      "index": 0,
+      "cases": [
+        {
+          "when": "bites_1",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/beer_0"
+          }
+        },
+        {
+          "when": "bites_2",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/beer_1"
+          }
+        },
+        {
+          "when": "bites_3",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/beer_2"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "lets-cook-justfatlard:item/beer"
+      }
     }
   }
 }

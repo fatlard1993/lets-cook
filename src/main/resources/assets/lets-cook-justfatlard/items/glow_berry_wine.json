@@ -34,8 +34,36 @@
       }
     },
     "on_false": {
-      "type": "minecraft:model",
-      "model": "lets-cook-justfatlard:item/glow_berry_wine"
+      "type": "minecraft:select",
+      "property": "minecraft:custom_model_data",
+      "index": 0,
+      "cases": [
+        {
+          "when": "bites_1",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/glow_berry_wine_0"
+          }
+        },
+        {
+          "when": "bites_2",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/glow_berry_wine_1"
+          }
+        },
+        {
+          "when": "bites_3",
+          "model": {
+            "type": "minecraft:model",
+            "model": "lets-cook-justfatlard:item/eating/glow_berry_wine_2"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "lets-cook-justfatlard:item/glow_berry_wine"
+      }
     }
   }
 }
