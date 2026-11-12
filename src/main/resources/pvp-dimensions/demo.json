@@ -1,0 +1,52 @@
+{
+  "demo": {
+    "name": "Let's Cook",
+    "icon": "lets-cook-justfatlard:meat_stew",
+    "about": [
+      "Vanilla cooking rounded out: a smoker that burns only wood and makes smoked meat you can eat when full, stews and soups with effects, cheese, pies and drinks.",
+      "Set down the smoker, fuel it with logs and smoke some meat, then cook a stew, a soup or ice cream in the crafting table. Place the bucket of cheese to cut a slice, and try the beer."
+    ]
+  },
+  "pvp_preset": 1,
+  "needs": ["lets-cook-justfatlard"],
+  "preset": {
+    "name": "Let's Cook",
+    "icon": "lets-cook-justfatlard:meat_stew",
+    "pvp": false,
+    "game_mode": "survival",
+    "entry_kit": [
+      {"slot": 0, "item": {"id": "minecraft:smoker", "count": 1}},
+      {"slot": 1, "item": {"id": "minecraft:crafting_table", "count": 1}},
+      {"slot": 2, "item": {"id": "minecraft:oak_log", "count": 16}},
+      {"slot": 3, "item": {"id": "minecraft:beef", "count": 4}},
+      {"slot": 4, "item": {"id": "minecraft:porkchop", "count": 4}},
+      {"slot": 5, "item": {"id": "lets-cook-justfatlard:cheese_bucket", "count": 1}},
+      {"slot": 6, "item": {"id": "lets-cook-justfatlard:beer", "count": 1}},
+      {"slot": 7, "item": {"id": "minecraft:furnace", "count": 1}},
+      {"slot": 9, "item": {"id": "minecraft:bowl", "count": 6}},
+      {"slot": 10, "item": {"id": "minecraft:carrot", "count": 4}},
+      {"slot": 11, "item": {"id": "minecraft:potato", "count": 6}},
+      {"slot": 12, "item": {"id": "minecraft:beetroot", "count": 4}},
+      {"slot": 13, "item": {"id": "minecraft:milk_bucket", "count": 1}},
+      {"slot": 14, "item": {"id": "minecraft:snowball", "count": 4}},
+      {"slot": 15, "item": {"id": "minecraft:sugar", "count": 6}},
+      {"slot": 16, "item": {"id": "minecraft:sweet_berries", "count": 4}},
+      {"slot": 17, "item": {"id": "minecraft:wheat", "count": 2}},
+      {"slot": 18, "item": {"id": "minecraft:potion", "count": 1, "components": {"minecraft:potion_contents": {"potion": "minecraft:water"}}}},
+      {"slot": 22, "item": {"id": "minecraft:potion", "count": 1, "components": {"minecraft:potion_contents": {"potion": "minecraft:water"}}}},
+      {"slot": 23, "item": {"id": "minecraft:milk_bucket", "count": 1}},
+      {"slot": 19, "item": {"id": "minecraft:apple", "count": 2}},
+      {"slot": 20, "item": {"id": "minecraft:mutton", "count": 4}},
+      {"slot": 21, "item": {"id": "minecraft:cod", "count": 2}}
+    ],
+    "respawn_kit": "entry",
+    "goal": "time",
+    "mobs": "off",
+    "life": 15,
+    "size": 3,
+    "world": "overworld",
+    "shape": "natural",
+    "biome": "minecraft:meadow",
+    "weather": "clear"
+  }
+}
