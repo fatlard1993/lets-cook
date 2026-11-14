@@ -4,6 +4,9 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.7.2": [
+      "A demo to play in PvP Dimensions' onboarding."
+    ],
     "1.7.1": [
       "Drop changelog notes for changes nothing in the game shows."
     ],
