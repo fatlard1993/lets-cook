@@ -99,6 +99,9 @@ public final class Ferments {
 	 */
 	public static boolean tend(Level level, BlockPos pos, List<ItemStack> items,
 			@Nullable ServerPlayer opener) {
+		// Every hopper move into or out of any barrel lands here; the light is only worth reading
+		// for a barrel with something in it to ferment.
+		if (items.stream().noneMatch(stack -> BY_INPUT.containsKey(stack.getItem()))) return false;
 		boolean cellar = isCellar(level, pos);
 		SoundEvent finished = null;
 
@@ -251,11 +254,11 @@ public final class Ferments {
 	 * not been stamped yet reads as just begun, which is what the next {@link #tend} makes it.
 	 */
 	public static Status status(Level level, BlockPos pos, Container barrel) {
-		boolean cellar = isCellar(level, pos);
 		for (int slot = 0; slot < barrel.getContainerSize(); slot++) {
 			ItemStack stack = barrel.getItem(slot);
 			Ferment ferment = BY_INPUT.get(stack.getItem());
 			if (ferment == null) continue;
+			boolean cellar = isCellar(level, pos);
 
 			String stage = "stage.lets-cook-justfatlard." + ferment.stage();
 			long started = Labels.startedAt(stack);
