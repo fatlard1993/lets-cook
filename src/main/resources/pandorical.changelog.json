@@ -4,6 +4,9 @@
     "Nothing here needs a new station. The smoker, the furnace, the campfire, the barrel and the crafting grid do all of it."
   ],
   "versions": {
+    "1.7.3": [
+      "A hopper moving things through a barrel with nothing to ferment in it no longer reads the light around the barrel every time."
+    ],
     "1.7.2": [
       "A demo to play in PvP Dimensions' onboarding."
     ],
