@@ -3,7 +3,7 @@
   "id": "lets-cook-justfatlard",
   "version": "${version}",
   "name": "Let's Cook",
-  "description": "Rounds out vanilla cooking: smoking as its own craft, cheese, pies, stews and a reason to eat something other than the highest-saturation food in the game.",
+  "description": "Rounds out vanilla cooking: smoking, cheese, pies and stews",
   "authors": [
     "justfatlard"
   ],
